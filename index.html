@@ -171,7 +171,7 @@
             <h1>Mind Meld</h1>
             <p style="color: #a8a8b3; font-size: 15px;">Sync thoughts with another player. Type the exact same word to win.</p>
             <button id="findBtn">Find Opponent</button>
-            <p id="loadingText" class="hidden" style="color: #00adb5; font-weight: bold; animation: pulse 1.5s infinite alternate;">Searching for a partner...</p>
+            <p id="loadingText" class="hidden" style="color: #00adb5; font-weight: bold;">Searching for a partner...</p>
         </div>
 
         <div id="gameScreen" class="screen-content hidden">
@@ -224,6 +224,7 @@
         localStorage.setItem("mm_pid", playerId);
 
         let matchId = null, playerRole = null, timerInterval = null, currentMatchListener = null;
+        let hasSubmitted = false; // Prevents race conditions from wiping data
 
         const lobbyScreen = document.getElementById("lobbyScreen");
         const gameScreen = document.getElementById("gameScreen");
@@ -244,7 +245,6 @@
         const chatInput = document.getElementById("chatInput");
         const sendChatBtn = document.getElementById("sendChatBtn");
 
-        // Dynamic Network Connectivity Setup
         const connectedRef = ref(db, ".info/connected");
         onValue(connectedRef, (snap) => {
             if (snap.val() === false && matchId) {
@@ -324,7 +324,6 @@
         }
 
         function initMatch() {
-            // Clean up any loose search queues or old listeners
             off(ref(db, "matches"));
             onDisconnect(ref(db, `matches/${matchId}`)).remove();
 
@@ -342,7 +341,41 @@
                 themeText.innerText = data.currentTheme;
                 renderThemeButtons(data.votes);
 
-                // Handle Shared Master Voting Consensus cleanly via p1 routing
+                // 1. GLOBAL RESULTS SYNC CHECK (Checks real-time absolute values)
+                if (data.answers?.p1 && data.answers?.p2) {
+                    clearInterval(timerInterval);
+                    if (data.answers.p1 === data.answers.p2 && data.answers.p1 !== "[nothing]") {
+                        resultAlert.innerHTML = `🎉 MIND SYNCED! Both typed: <span style="color:#00adb5;">"${data.answers.p1.toUpperCase()}"</span>!`;
+                        if (playerRole === "p1" && data.state !== "resetting") {
+                            update(ref(db, `matches/${matchId}`), { state: "resetting" });
+                            setTimeout(() => {
+                                update(ref(db, `matches/${matchId}`), { 
+                                    state: "voting", 
+                                    currentTheme: THEMES[Math.floor(Math.random() * THEMES.length)], 
+                                    p1Ready: false, p2Ready: false, answers: null, votes: null
+                                });
+                            }, 4000);
+                        }
+                    } else {
+                        resultAlert.innerHTML = `❌ Miss! P1: "${data.answers.p1}" | P2: "${data.answers.p2}". Retrying...`;
+                        if (playerRole === "p1" && data.state !== "resetting") {
+                            update(ref(db, `matches/${matchId}`), { state: "resetting" });
+                            setTimeout(() => {
+                                update(ref(db, `matches/${matchId}`), { 
+                                    state: "waiting", 
+                                    p1Ready: false, p2Ready: false, answers: null 
+                                });
+                            }, 4000);
+                        }
+                    }
+                    return; 
+                }
+
+                // Reset submission locks upon transitioning back to setup states
+                if (data.state === "voting" || data.state === "waiting") {
+                    hasSubmitted = false;
+                }
+
                 if (data.votes?.p1 && data.votes?.p2 && data.state === "voting") {
                     if (playerRole === "p1") {
                         let chosenTheme = data.votes.p1 === data.votes.p2 ? data.votes.p1 : (Math.random() > 0.5 ? data.votes.p1 : data.votes.p2);
@@ -384,14 +417,12 @@
                     timerText.innerText = data.timer ?? 30;
                     resultAlert.innerText = "🧠 Enter your matching word now!";
 
-                    if (data.timer === 0) {
-                        clearInterval(timerInterval);
+                    if (data.timer === 0 && !hasSubmitted) {
                         evaluateRound();
                     }
                 }
             });
 
-            // Clean real-time messaging pipeline
             onValue(ref(db, `matches/${matchId}/chat`), (snap) => {
                 chatBox.innerHTML = "";
                 const messages = snap.val();
@@ -427,43 +458,12 @@
         }
 
         function evaluateRound() {
+            hasSubmitted = true; 
             const typedVal = wordInput.value.trim().toLowerCase() || "[nothing]";
             wordInput.value = "";
-            wordInput.blur(); // dismisses dynamic phone keyboards cleanly
+            wordInput.blur(); // Drops mobile keyboard out of viewport elegantly
 
-            // Write guess safely to answers
-            set(ref(db, `matches/${matchId}/answers/${playerRole}`), typedVal).then(() => {
-                // Read absolute synced data once to avoid race-conditions 
-                setTimeout(() => {
-                    onValue(ref(db, `matches/${matchId}/answers`), (snap) => {
-                        const ans = snap.val();
-                        if (ans && ans.p1 !== undefined && ans.p2 !== undefined) {
-                            if (ans.p1 === ans.p2 && ans.p1 !== "[nothing]") {
-                                resultAlert.innerHTML = `🎉 MIND SYNCED! Both typed: <span style="color:#00adb5;">"${ans.p1.toUpperCase()}"</span>!`;
-                                if (playerRole === "p1") {
-                                    setTimeout(() => {
-                                        update(ref(db, `matches/${matchId}`), { 
-                                            state: "voting", 
-                                            currentTheme: THEMES[Math.floor(Math.random() * THEMES.length)], 
-                                            p1Ready: false, p2Ready: false, answers: null 
-                                        });
-                                    }, 4000);
-                                }
-                            } else {
-                                resultAlert.innerHTML = `❌ Miss! P1: "${ans.p1}" | P2: "${ans.p2}". Retrying...`;
-                                if (playerRole === "p1") {
-                                    setTimeout(() => {
-                                        update(ref(db, `matches/${matchId}`), { 
-                                            state: "waiting", 
-                                            p1Ready: false, p2Ready: false, answers: null 
-                                        });
-                                    }, 4000);
-                                }
-                            }
-                        }
-                    }, { onlyOnce: true });
-                }, 500);
-            });
+            set(ref(db, `matches/${matchId}/answers/${playerRole}`), typedVal);
         }
 
         function handleDisconnection() {
