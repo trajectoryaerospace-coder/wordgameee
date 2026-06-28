@@ -2,10 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Mind Meld</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            -webkit-tap-highlight-color: transparent;
+        }
         
         body {
             background: #5b4968;
@@ -14,113 +20,122 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 15px;
+            min-height: 100dvh;
+            padding: 12px;
+            overflow: hidden;
         }
 
         .container {
             width: 100%;
-            max-width: 480px;
+            max-width: 420px;
+            height: 90vh;
+            height: 85dvh;
             background: #a34a92;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+            padding: 16px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
             text-align: center;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
+            justify-content: space-between;
+        }
+
+        .screen-content {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex-grow: 1;
+            justify-content: center;
         }
 
         .hidden { display: none !important; }
 
-        h1 { color: #00adb5; font-size: 28px; letter-spacing: 1px; }
+        h1 { color: #00adb5; font-size: 26px; letter-spacing: 0.5px; }
         
         button {
             background: #00adb5;
             color: #fff;
             border: none;
-            padding: 12px;
-            border-radius: 8px;
+            padding: 14px;
+            border-radius: 10px;
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
             width: 100%;
-            transition: background 0.2s;
+            transition: background 0.2s, transform 0.1s;
         }
-        button:hover { background: #008c9e; }
-        button:disabled { background: #4a4a4a; cursor: not-allowed; }
+        button:active { transform: scale(0.98); }
+        button:disabled { background: #4a4a4a; cursor: not-allowed; transform: none; }
 
-        /* Top Alert Banner */
         .alert-banner {
             background: #29292e;
             padding: 12px;
-            border-radius: 8px;
+            border-radius: 10px;
             font-weight: bold;
-            font-size: 15px;
+            font-size: 14px;
             border: 1px solid #323238;
         }
-        #resultAlert { color: #ffca28; margin-top: 5px; display: block; font-size: 14px;}
+        #resultAlert { color: #ffca28; margin-top: 4px; display: block; font-size: 13px;}
         #themeText { color: #00adb5; }
-        #timerText { color: #ff4a4a; margin-left: 10px; font-size: 18px; }
+        #timerText { color: #ff4a4a; margin-left: 6px; font-size: 16px; font-weight: bold; }
 
-        /* Theme Voting Grid */
         .theme-box {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 8px;
-            margin-top: 8px;
-            max-height: 140px;
+            margin-top: 6px;
+            max-height: 120px;
             overflow-y: auto;
         }
         .theme-btn {
             background: #29292e;
             color: #a8a8b3;
-            padding: 10px;
-            font-size: 14px;
+            padding: 12px;
+            font-size: 13px;
             border: 1px solid #323238;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             text-align: center;
+            font-weight: 500;
         }
         .theme-btn.active { background: #00adb5; color: #fff; border-color: #00adb5; }
 
-        /* Inputs */
         .input-style {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             background: #121214;
             border: 2px solid #323238;
             color: #fff;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 16px;
             text-align: center;
             outline: none;
         }
         .input-style:focus { border-color: #00adb5; }
 
-        /* Beautiful Chat Box Layout */
         .chat-box {
             background: #121214;
-            height: 200px;
+            flex-grow: 1;
+            height: 120px;
             overflow-y: auto;
-            border-radius: 8px;
-            padding: 12px;
+            border-radius: 10px;
+            padding: 10px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
             border: 1px solid #323238;
         }
         
-        /* Chat Bubbles */
         .bubble {
-            max-width: 75%;
+            max-width: 80%;
             padding: 8px 12px;
             border-radius: 14px;
-            font-size: 14px;
+            font-size: 13px;
             word-break: break-word;
             line-height: 1.4;
         }
         
-        /* Me (Right Side) */
         .bubble.me {
             background: #00adb5;
             color: #fff;
@@ -128,7 +143,6 @@
             border-bottom-right-radius: 2px;
         }
         
-        /* Them (Left Side) */
         .bubble.them {
             background: #29292e;
             color: #e1e1e6;
@@ -136,62 +150,61 @@
             border-bottom-left-radius: 2px;
         }
 
-        /* System Messages */
         .bubble.sys {
             background: rgba(0, 173, 181, 0.1);
             color: #00adb5;
             align-self: center;
             border-radius: 6px;
             font-style: italic;
-            font-size: 12px;
+            font-size: 11px;
             text-align: center;
-            max-width: 90%;
+            max-width: 95%;
         }
 
-        .chat-input-container { display: flex; gap: 6px; }
+        .chat-input-container { display: flex; gap: 6px; width: 100%; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div id="lobbyScreen">
+        <div id="lobbyScreen" class="screen-content">
             <h1>Mind Meld</h1>
-            <p style="color: #a8a8b3; margin: 15px 0 20px 0;">Sync thoughts with another player. Type the exact same word to win.</p>
+            <p style="color: #a8a8b3; font-size: 15px;">Sync thoughts with another player. Type the exact same word to win.</p>
             <button id="findBtn">Find Opponent</button>
-            <p id="loadingText" class="hidden" style="margin-top: 15px; color: #00adb5; font-weight: bold;">Searching for a partner...</p>
+            <p id="loadingText" class="hidden" style="color: #00adb5; font-weight: bold; animation: pulse 1.5s infinite alternate;">Searching for a partner...</p>
         </div>
 
-        <div id="gameScreen" class="hidden">
+        <div id="gameScreen" class="screen-content hidden">
             <div class="alert-banner">
                 <div>Theme: <span id="themeText">---</span><span id="timerContainer" class="hidden"> | Time: <span id="timerText">30</span></span></div>
-                <div id="resultAlert">Waiting for game actions...</div>
+                <div id="resultAlert">Waiting for connection...</div>
             </div>
 
-            <div id="votingArea">
-                <p style="font-size: 13px; color: #a8a8b3; text-align: left;">Vote for a theme:</p>
+            <div id="votingArea" class="hidden">
+                <p style="font-size: 13px; color: #a8a8b3; text-align: left; padding-left: 2px;">Vote for a theme:</p>
                 <div class="theme-box" id="themesGrid"></div>
             </div>
 
-            <div id="readyArea">
-                <p id="statusMsg" style="margin-bottom: 10px; font-size: 14px; color: #a8a8b3;">Match Connected!</p>
+            <div id="readyArea" class="hidden">
+                <p id="statusMsg" style="margin-bottom: 8px; font-size: 14px; color: #a8a8b3;">Match Connected!</p>
                 <button id="readyBtn">I'm Ready</button>
             </div>
 
             <div id="typingArea" class="hidden">
-                <input type="text" id="wordInput" class="input-style" placeholder="Type your guess here..." autocomplete="off">
+                <input type="text" id="wordInput" class="input-style" placeholder="Type your guess here..." autocomplete="off" autocapitalize="off">
             </div>
 
             <div class="chat-box" id="chatBox"></div>
             <div class="chat-input-container">
-                <input type="text" id="chatInput" class="input-style" style="text-align: left; padding: 10px;" placeholder="Send a chat...">
-                <button id="sendChatBtn" style="width: auto; margin: 0; padding: 0 16px;">Send</button>
+                <input type="text" id="chatInput" class="input-style" style="text-align: left; padding: 12px;" placeholder="Send a chat..." autocapitalize="off">
+                <button id="sendChatBtn" style="width: auto; padding: 0 16px;">Send</button>
             </div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
-        import { getDatabase, ref, set, push, onValue, update, remove, onDisconnect } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
+        import { getDatabase, ref, set, push, onValue, update, remove, onDisconnect, off } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDTd0toQlWRTlFIX3NygDlFxXtMmKttqyw",
@@ -210,9 +223,8 @@
         let playerId = localStorage.getItem("mm_pid") || "p_" + Math.random().toString(36).substr(2, 9);
         localStorage.setItem("mm_pid", playerId);
 
-        let matchId = null, playerRole = null, timerInterval = null, isEvaluating = false;
+        let matchId = null, playerRole = null, timerInterval = null, currentMatchListener = null;
 
-        // UI Elements
         const lobbyScreen = document.getElementById("lobbyScreen");
         const gameScreen = document.getElementById("gameScreen");
         const findBtn = document.getElementById("findBtn");
@@ -226,16 +238,28 @@
         const readyBtn = document.getElementById("readyBtn");
         const statusMsg = document.getElementById("statusMsg");
         const typingArea = document.getElementById("typingArea");
+        const votingArea = document.getElementById("votingArea");
         const wordInput = document.getElementById("wordInput");
         const chatBox = document.getElementById("chatBox");
         const chatInput = document.getElementById("chatInput");
         const sendChatBtn = document.getElementById("sendChatBtn");
 
+        // Dynamic Network Connectivity Setup
+        const connectedRef = ref(db, ".info/connected");
+        onValue(connectedRef, (snap) => {
+            if (snap.val() === false && matchId) {
+                handleDisconnection();
+            }
+        });
+
         findBtn.onclick = () => {
             findBtn.classList.add("hidden");
             loadingText.classList.remove("hidden");
 
-            onValue(ref(db, "queue"), (snap) => {
+            const queueRef = ref(db, "queue");
+            onDisconnect(ref(db, `queue/${playerId}`)).remove();
+
+            onValue(queueRef, (snap) => {
                 if (matchId) return;
                 const queue = snap.val();
                 if (queue) {
@@ -243,13 +267,15 @@
                     if (opponent) {
                         matchId = `m_${opponent}_${playerId}`;
                         playerRole = "p2";
+                        
                         remove(ref(db, `queue/${opponent}`));
+                        remove(ref(db, `queue/${playerId}`));
+
                         set(ref(db, `matches/${matchId}`), {
                             p1: opponent, p2: playerId,
                             currentTheme: THEMES[Math.floor(Math.random() * THEMES.length)],
                             state: "voting", p1Ready: false, p2Ready: false
-                        });
-                        initMatch();
+                        }).then(() => initMatch());
                     }
                 } else {
                     set(ref(db, `queue/${playerId}`), true);
@@ -260,12 +286,14 @@
         };
 
         function listenForMatch() {
-            onValue(ref(db, "matches"), (snap) => {
+            const matchesRef = ref(db, "matches");
+            onValue(matchesRef, (snap) => {
                 const matches = snap.val();
                 if (matches && !matchId) {
                     for (let id in matches) {
                         if (matches[id].p1 === playerId) {
                             matchId = id;
+                            remove(ref(db, `queue/${playerId}`));
                             initMatch();
                             break;
                         }
@@ -276,8 +304,6 @@
 
         function renderThemeButtons(votesData) {
             themesGrid.innerHTML = "";
-            
-            // Calculate total votes for each theme option
             const counts = {};
             THEMES.forEach(t => counts[t] = 0);
             if (votesData) {
@@ -289,10 +315,7 @@
                 const b = document.createElement("button");
                 b.className = "theme-btn";
                 if (votesData && votesData[playerRole] === t) b.classList.add("active");
-                
-                // Append total vote count cleanly next to option item
                 b.innerText = counts[t] > 0 ? `${t} (${counts[t]})` : t;
-                
                 b.onclick = () => {
                     set(ref(db, `matches/${matchId}/votes/${playerRole}`), t);
                 };
@@ -301,47 +324,51 @@
         }
 
         function initMatch() {
+            // Clean up any loose search queues or old listeners
+            off(ref(db, "matches"));
             onDisconnect(ref(db, `matches/${matchId}`)).remove();
+
             lobbyScreen.classList.add("hidden");
             gameScreen.classList.remove("hidden");
-
             renderThemeButtons(null);
 
-            // Room update events loop
-            onValue(ref(db, `matches/${matchId}`), (snap) => {
+            currentMatchListener = onValue(ref(db, `matches/${matchId}`), (snap) => {
                 const data = snap.val();
                 if (!data) {
-                    resultAlert.innerText = "Partner disconnected! Reloading game...";
-                    setTimeout(() => location.reload(), 2500);
+                    handleDisconnection();
                     return;
                 }
+
                 themeText.innerText = data.currentTheme;
                 renderThemeButtons(data.votes);
 
-                // Check voting consensus
+                // Handle Shared Master Voting Consensus cleanly via p1 routing
                 if (data.votes?.p1 && data.votes?.p2 && data.state === "voting") {
-                    let chosenTheme = data.votes.p1 === data.votes.p2 ? data.votes.p1 : (Math.random() > 0.5 ? data.votes.p1 : data.votes.p2);
-                    update(ref(db, `matches/${matchId}`), { currentTheme: chosenTheme, state: "waiting", votes: null });
+                    if (playerRole === "p1") {
+                        let chosenTheme = data.votes.p1 === data.votes.p2 ? data.votes.p1 : (Math.random() > 0.5 ? data.votes.p1 : data.votes.p2);
+                        update(ref(db, `matches/${matchId}`), { currentTheme: chosenTheme, state: "waiting", votes: null });
+                    }
                     return;
                 }
 
                 if (data.state === "voting") {
                     resultAlert.innerText = "🗳️ Choose a theme below!";
-                    readyArea.classList.remove("hidden");
+                    votingArea.classList.remove("hidden");
+                    readyArea.classList.add("hidden");
                     typingArea.classList.add("hidden");
                     timerContainer.classList.add("hidden");
-                    readyBtn.classList.add("hidden");
                 }
 
                 if (data.state === "waiting") {
-                    isEvaluating = false;
+                    votingArea.classList.add("hidden");
                     readyArea.classList.remove("hidden");
                     readyBtn.classList.remove("hidden");
                     typingArea.classList.add("hidden");
                     timerContainer.classList.add("hidden");
 
-                    readyBtn.disabled = data[`${playerRole}Ready`];
-                    statusMsg.innerText = data[`${playerRole}Ready`] ? "Waiting for partner..." : "Theme set! Ready up to match words!";
+                    const myReadyStatus = data[`${playerRole}Ready`];
+                    readyBtn.disabled = myReadyStatus;
+                    statusMsg.innerText = myReadyStatus ? "Waiting for partner..." : "Theme set! Ready up to match words!";
                     resultAlert.innerText = "⏳ Awaiting ready confirmations.";
 
                     if (data.p1Ready && data.p2Ready) {
@@ -350,34 +377,30 @@
                 }
 
                 if (data.state === "typing") {
+                    votingArea.classList.add("hidden");
                     readyArea.classList.add("hidden");
                     typingArea.classList.remove("hidden");
                     timerContainer.classList.remove("hidden");
                     timerText.innerText = data.timer ?? 30;
                     resultAlert.innerText = "🧠 Enter your matching word now!";
 
-                    if (data.timer === 0 && !isEvaluating) {
-                        isEvaluating = true;
+                    if (data.timer === 0) {
                         clearInterval(timerInterval);
-                        checkMatchResults();
+                        evaluateRound();
                     }
                 }
             });
 
-            // Live clean chat feed
+            // Clean real-time messaging pipeline
             onValue(ref(db, `matches/${matchId}/chat`), (snap) => {
                 chatBox.innerHTML = "";
                 const messages = snap.val();
                 if (messages) {
                     Object.values(messages).forEach(m => {
-                        let bubbleClass = "sys";
-                        if (!m.sys) {
-                            bubbleClass = (m.uid === playerId) ? "me" : "them";
-                        }
-                        
+                        const bubbleClass = m.sys ? "sys" : (m.uid === playerId ? "me" : "them");
                         const msgDiv = document.createElement("div");
                         msgDiv.className = `bubble ${bubbleClass}`;
-                        msgDiv.innerText = m.sys ? m.msg : m.msg;
+                        msgDiv.innerText = m.msg;
                         chatBox.appendChild(msgDiv);
                     });
                     chatBox.scrollTop = chatBox.scrollHeight;
@@ -403,45 +426,53 @@
             }, 1000);
         }
 
-        function checkMatchResults() {
-            const val = wordInput.value.trim().toLowerCase() || "[nothing]";
+        function evaluateRound() {
+            const typedVal = wordInput.value.trim().toLowerCase() || "[nothing]";
             wordInput.value = "";
+            wordInput.blur(); // dismisses dynamic phone keyboards cleanly
 
-            set(ref(db, `matches/${matchId}/answers/${playerRole}`), val);
-
-            setTimeout(() => {
-                onValue(ref(db, `matches/${matchId}/answers`), (snap) => {
-                    const ans = snap.val();
-                    if (ans && ans.p1 !== undefined && ans.p2 !== undefined) {
-                        
-                        if (ans.p1 === ans.p2 && ans.p1 !== "[nothing]") {
-                            resultAlert.innerHTML = `🎉 MIND SYNCED! You both typed: <span style="color:#00adb5;">"${ans.p1.toUpperCase()}"</span>!`;
-                            if (playerRole === "p1") {
-                                setTimeout(() => {
-                                    update(ref(db, `matches/${matchId}`), { 
-                                        state: "voting", 
-                                        currentTheme: THEMES[Math.floor(Math.random() * THEMES.length)], 
-                                        p1Ready: false, p2Ready: false, answers: null 
-                                    });
-                                }, 4000);
-                            }
-                        } else {
-                            resultAlert.innerHTML = `❌ Miss! P1 entered "${ans.p1}" & P2 entered "${ans.p2}". Retrying...`;
-                            if (playerRole === "p1") {
-                                setTimeout(() => {
-                                    update(ref(db, `matches/${matchId}`), { 
-                                        state: "waiting", 
-                                        p1Ready: false, p2Ready: false, answers: null 
-                                    });
-                                }, 4000);
+            // Write guess safely to answers
+            set(ref(db, `matches/${matchId}/answers/${playerRole}`), typedVal).then(() => {
+                // Read absolute synced data once to avoid race-conditions 
+                setTimeout(() => {
+                    onValue(ref(db, `matches/${matchId}/answers`), (snap) => {
+                        const ans = snap.val();
+                        if (ans && ans.p1 !== undefined && ans.p2 !== undefined) {
+                            if (ans.p1 === ans.p2 && ans.p1 !== "[nothing]") {
+                                resultAlert.innerHTML = `🎉 MIND SYNCED! Both typed: <span style="color:#00adb5;">"${ans.p1.toUpperCase()}"</span>!`;
+                                if (playerRole === "p1") {
+                                    setTimeout(() => {
+                                        update(ref(db, `matches/${matchId}`), { 
+                                            state: "voting", 
+                                            currentTheme: THEMES[Math.floor(Math.random() * THEMES.length)], 
+                                            p1Ready: false, p2Ready: false, answers: null 
+                                        });
+                                    }, 4000);
+                                }
+                            } else {
+                                resultAlert.innerHTML = `❌ Miss! P1: "${ans.p1}" | P2: "${ans.p2}". Retrying...`;
+                                if (playerRole === "p1") {
+                                    setTimeout(() => {
+                                        update(ref(db, `matches/${matchId}`), { 
+                                            state: "waiting", 
+                                            p1Ready: false, p2Ready: false, answers: null 
+                                        });
+                                    }, 4000);
+                                }
                             }
                         }
-                    }
-                }, { onlyOnce: true });
-            }, 600);
+                    }, { onlyOnce: true });
+                }, 500);
+            });
         }
 
-        // Chat controls
+        function handleDisconnection() {
+            clearInterval(timerInterval);
+            if (currentMatchListener) off(ref(db, `matches/${matchId}`));
+            resultAlert.innerText = "⚠️ Connection lost or partner left! Reloading...";
+            setTimeout(() => location.reload(), 2000);
+        }
+
         sendChatBtn.onclick = postChat;
         chatInput.onkeypress = (e) => { if (e.key === "Enter") postChat(); };
         function postChat() {
@@ -449,6 +480,7 @@
             if(!m) return;
             push(ref(db, `matches/${matchId}/chat`), { uid: playerId, msg: m, sys: false });
             chatInput.value = "";
+            chatInput.blur();
         }
     </script>
 </body>
