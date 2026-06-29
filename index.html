@@ -958,20 +958,22 @@
                 const guessValue = wordlessGuessInput.value.trim().toLowerCase();
                 if (guessValue.length !== 5) return;
 
-                // Restrict input to existing/real words within the WORD_POOL dictionary
-                if (!WORD_POOL.includes(guessValue)) {
-                    alert("Not a valid word in the dictionary! Please guess a real word.");
-                    wordlessGuessInput.value = "";
-                    return;
-                }
-
-                wordlessGuessInput.value = ""; wordlessGuessInput.blur();
-
                 onValue(ref(db, `matches/${matchId}`), (snap) => {
                     const mData = snap.val();
                     if (!mData) return;
-                    const secret = mData.wordlessSecret;
+                    
                     let currentGuesses = mData.wordlessGuesses ? [...mData.wordlessGuesses] : [];
+                    
+                    // Repetition rule check: count occurrences of this guess inside current session list
+                    let repeatCount = currentGuesses.filter(g => g === guessValue).length;
+                    if (repeatCount >= 3) {
+                        alert("Anti-Repetition Alert: You cannot repeat the exact same word 4 times in one match!");
+                        wordlessGuessInput.value = "";
+                        return;
+                    }
+
+                    wordlessGuessInput.value = ""; wordlessGuessInput.blur();
+                    const secret = mData.wordlessSecret;
                     currentGuesses.push(guessValue);
 
                     let nextTurn = playerRole === "p1" ? "p2" : "p1";
@@ -1303,7 +1305,6 @@
                     wordlessInputArea.classList.add("hidden");
                     renderWordlessGrid(data.wordlessGuesses, data.wordlessSecret);
                     
-                    // Always show the secret word on failure for 7 seconds
                     resultAlert.innerText = `❌ GAME OVER! The secret word was: "${data.wordlessSecret.toUpperCase()}"`;
 
                     if (!window.wordlessCountdownInterval) {
