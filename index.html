@@ -275,29 +275,6 @@
             animation: pulse-red-king 1.5s infinite alternate;
         }
 
-        .chess-controls {
-            display: flex;
-            gap: 6px;
-            margin-top: 8px;
-            justify-content: center;
-            width: 100%;
-        }
-        .chess-ctrl-btn {
-            flex: 1;
-            padding: 8px;
-            font-size: 12px;
-            border-radius: 6px;
-        }
-        #chessUndoBtn {
-            background: #2b4360;
-            border: 1px solid #3b597d;
-        }
-        #chessUndoBtn:disabled {
-            background: #222a36;
-            color: #556375;
-            border-color: #2a3442;
-        }
-
         /* Wordless Grid and Input Container */
         #wordlessArea {
             background: #1a1520;
@@ -578,8 +555,8 @@
         ];
 
         const PIECES = {
-            'R': '⛊', 'N': '⛊', 'B': '⛊', 'Q': '⛊', 'K': '⛊', 'P': '⛊',
-            'r': '⛊', 'n': '⛊', 'b': '⛊', 'q': '⛊', 'k': '⛊', 'p': '⛊',
+            'R': '♜', 'N': '♞', 'B': '♝', 'Q': '♛', 'K': '♚', 'P': '♟',
+            'r': '♜', 'n': '♞', 'b': '♝', 'q': '♛', 'k': '♚', 'p': '♟',
             '.': ''
         };
         const INITIAL_CHESS = [
@@ -987,6 +964,7 @@
                     
                     let currentGuesses = mData.wordlessGuesses ? [...mData.wordlessGuesses] : [];
                     
+                    // Repetition rule check: count occurrences of this guess inside current session list
                     let repeatCount = currentGuesses.filter(g => g === guessValue).length;
                     if (repeatCount >= 3) {
                         alert("Anti-Repetition Alert: You cannot repeat the exact same word 4 times in one match!");
