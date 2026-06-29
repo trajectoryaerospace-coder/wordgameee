@@ -120,7 +120,7 @@
             grid-template-columns: repeat(2, 1fr);
             gap: 4px;
             margin-top: 2px;
-            max-height: 95px;
+            max-height: 105px;
             overflow-y: auto;
         }
         .grid-box.three-cols {
@@ -136,6 +136,17 @@
             cursor: pointer;
             text-align: center;
             font-weight: 500;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .sync-tag {
+            font-size: 8px;
+            opacity: 0.7;
+            display: block;
+            margin-top: 1px;
+            font-weight: bold;
         }
         .theme-btn.active, .mode-btn.active { background: #00adb5; color: #fff; border-color: #00adb5; }
         .mode-btn.active { background: #ff8bb6; border-color: #ff8bb6; }
@@ -145,10 +156,15 @@
         .mode-btn.custom-modifier-highlight { border-color: #4caf50; color: #4caf50; }
         .mode-btn.custom-modifier-highlight.active { background: #4caf50; color: #ffffff; border-color: #4caf50; }
         
-        /* Time-Specific Colors When Active */
-        .time-btn.active-10 { background: #f44336 !important; border-color: #f44336 !important; color: #fff !important; }
-        .time-btn.active-20 { background: #ffca28 !important; border-color: #ffca28 !important; color: #131017 !important; }
-        .time-btn.active-30 { background: #4caf50 !important; border-color: #4caf50 !important; color: #fff !important; }
+        /* Time Buttons Permanently Colored */
+        .time-btn-10 { background: #5c1d1d !important; border-color: #9c27b0 !important; color: #ff9999 !important; }
+        .time-btn-10.active { background: #f44336 !important; border-color: #ffffff !important; color: #fff !important; box-shadow: 0 0 8px #f44336; }
+        
+        .time-btn-20 { background: #524315 !important; border-color: #ff9800 !important; color: #ffe699 !important; }
+        .time-btn-20.active { background: #ffca28 !important; border-color: #ffffff !important; color: #131017 !important; box-shadow: 0 0 8px #ffca28; }
+        
+        .time-btn-30 { background: #1b4d22 !important; border-color: #00bcd4 !important; color: #99ff99 !important; }
+        .time-btn-30.active { background: #4caf50 !important; border-color: #ffffff !important; color: #fff !important; box-shadow: 0 0 8px #4caf50; }
 
         .input-style {
             width: 100%;
@@ -196,7 +212,7 @@
         .c4-slot.empty:active { transform: scale(0.9); }
         .c4-slot.winning-highlight { background: #ffca28 !important; box-shadow: 0 0 14px #ffca28 !important; border-color: #fff !important; }
 
-        /* Chess Board Styles with 20% Smaller Scaling Formats */
+        /* Chess Board Styles */
         #chessArea {
             background: #1a1520;
             padding: 8px;
@@ -278,6 +294,63 @@
             background: #3d2f44;
         }
 
+        /* Wordless/Wordle Styles */
+        #wordlessArea {
+            background: #1a1520;
+            padding: 6px;
+            border-radius: 12px;
+            border: 1px solid #42334a;
+            max-height: 240px;
+            overflow-y: auto;
+        }
+        .wordless-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            max-width: 190px;
+            margin: 0 auto;
+        }
+        .wordless-row {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 3px;
+        }
+        .wordless-tile {
+            aspect-ratio: 1 / 1;
+            border: 1.5px solid #3d2f44;
+            background: #131017;
+            color: #fff;
+            font-weight: bold;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-transform: uppercase;
+            border-radius: 4px;
+        }
+        .wordless-tile.correct { background: #4caf50 !important; border-color: #4caf50 !important; }
+        .wordless-tile.present { background: #ffca28 !important; border-color: #ffca28 !important; color: #131017 !important; }
+        .wordless-tile.absent { background: #555555 !important; border-color: #555555 !important; }
+
+        /* Game Quit Panel */
+        .quit-control-box {
+            width: 100%;
+            padding: 2px 0;
+        }
+        .quit-btn {
+            background: #331c23;
+            color: #ff6b8b;
+            border: 1px solid #542533;
+            font-size: 11px;
+            padding: 5px;
+            border-radius: 6px;
+        }
+        .quit-btn.voted {
+            background: #ff4a7d;
+            color: #fff;
+            box-shadow: 0 0 6px #ff4a7d;
+        }
+
         /* Reactions Panel */
         .reaction-deck {
             display: flex;
@@ -296,7 +369,7 @@
         }
         .react-btn:active { transform: scale(1.2); }
 
-        /* Chat Container with Subtle Gaming Vectors/Diagram Overlay Background */
+        /* Chat Container */
         .chat-box {
             background: #131017;
             background-image: radial-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 0), 
@@ -305,7 +378,7 @@
             background-size: 8px 8px, 24px 24px, 24px 24px;
             position: relative;
             flex-grow: 1;
-            height: 70px;
+            height: 60px;
             overflow-y: auto;
             border-radius: 10px;
             padding: 10px;
@@ -315,7 +388,6 @@
             border: 1px solid #3d2f44;
         }
         
-        /* Transparent Gaming Emblem Details Overlaying Chat Wall */
         .chat-box::before {
             content: "🎮 ⚡ 🕹️ 🧩 ⚔️ ☖ ⛃ 📊 ⚙️ ❮/❯";
             position: absolute;
@@ -396,6 +468,14 @@
                 </div>
             </div>
 
+            <div id="wordlessArea" class="hidden">
+                <p id="wordlessStatus" style="font-size: 13px; color: #ffca28; margin-bottom: 4px; font-weight: bold;"></p>
+                <div class="wordless-grid" id="wordlessGridDisplay"></div>
+                <div id="wordlessInputArea" style="margin-top: 6px;" class="hidden">
+                    <input type="text" id="wordlessGuessInput" class="input-style" placeholder="Type 5-letter word..." maxlength="5" autocomplete="off" autocapitalize="off" style="padding: 8px; font-size: 13px;">
+                </div>
+            </div>
+
             <div id="votingArea" class="hidden">
                 <p class="section-title">1. Vote Modifiers:</p>
                 <div class="grid-box" id="modesGrid"></div>
@@ -414,6 +494,10 @@
 
             <div id="typingArea" class="hidden">
                 <input type="text" id="wordInput" class="input-style" placeholder="Type your guess here..." autocomplete="off" autocapitalize="off">
+            </div>
+
+            <div id="quitArea" class="quit-control-box hidden">
+                <button id="quitBtn" class="quit-btn">Vote Quit to Lobby (0/2)</button>
             </div>
 
             <div class="reaction-deck">
@@ -452,8 +536,26 @@
         const db = getDatabase(app);
 
         const THEMES = ["Places", "Objects", "Animals", "Food", "Movies", "Superheroes", "Games", "Colors", "Jobs", "Brands"];
-        const MODES = ["Classic", "Mystery", "Connect 4", "Normal Connect 4", "Chess", "Normal Chess"];
+        const MODES = ["Classic", "Mystery", "Connect 4", "Normal Connect 4", "Chess", "Normal Chess", "Wordless", "Normal Wordless"];
         const TIMES = [10, 20, 30];
+
+        const WORD_POOL = [
+            "about", "above", "apple", "beach", "bread", "brick", "brown", "brush", "camel", "candy",
+            "chair", "chart", "chase", "chief", "clean", "clock", "clown", "coach", "coast", "cream",
+            "dance", "dream", "dress", "drink", "drive", "early", "earth", "eight", "elbow", "empty",
+            "event", "every", "extra", "faith", "false", "field", "fifth", "fight", "final", "first",
+            "floor", "flute", "focus", "frame", "fresh", "front", "fruit", "giant", "glass", "glove",
+            "grand", "grape", "grass", "green", "group", "guard", "guide", "happy", "heart", "heavy",
+            "horse", "hotel", "house", "image", "irony", "juice", "knife", "light", "lucky", "lunch",
+            "match", "model", "money", "month", "motor", "mouth", "music", "night", "noise", "north",
+            "novel", "nurse", "ocean", "offer", "onion", "order", "other", "owner", "paint", "paper",
+            "party", "peace", "phase", "piano", "pilot", "pitch", "place", "plain", "plane", "plant",
+            "plate", "point", "pound", "power", "press", "price", "pride", "prize", "proud", "queen",
+            "quick", "quiet", "quite", "radio", "raise", "range", "ratio", "reach", "relax", "reply",
+            "right", "river", "rough", "round", "route", "royal", "rural", "scale", "scene", "scope",
+            "score", "sense", "seven", "shake", "share", "sharp", "shave", "sheep", "sheet", "shelf",
+            "shine", "shirt", "shock", "shoot", "shore", "short", "shout", "sight", "silly", "silver"
+        ];
 
         const PIECES = {
             'R': '♜', 'N': '♞', 'B': '♝', 'Q': '♛', 'K': '♚', 'P': '♟',
@@ -478,6 +580,7 @@
         let hasSubmitted = false, selectedSquare = null, validDestinations = [];
         window.c4DelayTimeout = null; window.c4CountdownInterval = null;
         window.chessDelayTimeout = null; window.chessCountdownInterval = null;
+        window.wordlessDelayTimeout = null; window.wordlessCountdownInterval = null;
 
         const lobbyScreen = document.getElementById("lobbyScreen");
         const gameScreen = document.getElementById("gameScreen");
@@ -504,6 +607,13 @@
         const chessUndoBtn = document.getElementById("chessUndoBtn");
         const chessGrantUndoBtn = document.getElementById("chessGrantUndoBtn");
         const chessResignBtn = document.getElementById("chessResignBtn");
+        const wordlessArea = document.getElementById("wordlessArea");
+        const wordlessStatus = document.getElementById("wordlessStatus");
+        const wordlessGridDisplay = document.getElementById("wordlessGridDisplay");
+        const wordlessInputArea = document.getElementById("wordlessInputArea");
+        const wordlessGuessInput = document.getElementById("wordlessGuessInput");
+        const quitArea = document.getElementById("quitArea");
+        const quitBtn = document.getElementById("quitBtn");
         const wordInput = document.getElementById("wordInput");
         const chatBox = document.getElementById("chatBox");
         const chatInput = document.getElementById("chatInput");
@@ -538,6 +648,8 @@
                             state: "voting", p1Ready: false, p2Ready: false, streak: 0,
                             c4Board: Array(42).fill("empty"), c4Turn: "p1",
                             chessBoard: INITIAL_CHESS, chessTurn: "p1", chessMovesLeft: 0, undoRequested: "",
+                            wordlessSecret: WORD_POOL[Math.floor(Math.random() * WORD_POOL.length)], wordlessGuesses: [], wordlessTurn: "p1", wordlessMovesLeft: 0,
+                            quitVotes: { p1: false, p2: false },
                             lastSyncResult: ""
                         }).then(() => initMatch());
                     }
@@ -574,19 +686,25 @@
                 b.className = "mode-btn";
                 if (m.startsWith("Normal ")) {
                     b.classList.add("normal-mode-highlight");
+                    b.innerText = m;
                 } else {
                     b.classList.add("custom-modifier-highlight");
+                    b.innerHTML = `${m} <span class="sync-tag">(SYNC)</span>`;
                 }
                 if (modeVotesData && modeVotesData[playerRole] === m) b.classList.add("active");
-                b.innerText = mCounts[m] > 0 ? `${m} (${mCounts[m]})` : m;
+                if (mCounts[m] > 0) {
+                    if (m.startsWith("Normal ")) b.innerText = `${m} (${mCounts[m]})`;
+                    else b.innerHTML = `${m} <span class="sync-tag">(SYNC) (${mCounts[m]})</span>`;
+                }
                 b.onclick = () => set(ref(db, `matches/${matchId}/modeVotes/${playerRole}`), m);
                 modesGrid.appendChild(b);
             });
 
             TIMES.forEach(tm => {
-                const b = document.createElement("button"); b.className = "time-btn";
+                const b = document.createElement("button"); 
+                b.className = `time-btn time-btn-${tm}`;
                 if (timeVotesData && timeVotesData[playerRole] === tm) {
-                    b.classList.add(`active-${tm}`);
+                    b.classList.add("active");
                 }
                 b.innerText = tmCounts[tm] > 0 ? `${tm}s (${tmCounts[tm]})` : `${tm}s`;
                 b.onclick = () => set(ref(db, `matches/${matchId}/timeVotes/${playerRole}`), tm);
@@ -711,17 +829,12 @@
 
         function renderChessBoard(boardArray, interactive, currentMatchData = {}) {
             chessBoardDisplay.innerHTML = "";
-            
             const renderingIndices = [];
-            if (playerRole === "p2") {
-                for (let i = 63; i >= 0; i--) renderingIndices.push(i);
-            } else {
-                for (let i = 0; i < 64; i++) renderingIndices.push(i);
-            }
+            if (playerRole === "p2") { for (let i = 63; i >= 0; i--) renderingIndices.push(i); }
+            else { for (let i = 0; i < 64; i++) renderingIndices.push(i); }
 
             const whiteKingIdx = findKing(boardArray, "white");
             const blackKingIdx = findKing(boardArray, "black");
-            
             let isWInCheck = isKingInCheck(boardArray, "white");
             let isBInCheck = isKingInCheck(boardArray, "black");
 
@@ -729,7 +842,6 @@
                 const cell = boardArray[i];
                 const sq = document.createElement("div");
                 const r = Math.floor(i / 8), c = i % 8;
-                
                 sq.className = `chess-square ${(r + c) % 2 === 0 ? 'light' : 'dark'}`;
                 
                 if (cell !== '.') {
@@ -758,22 +870,17 @@
                             let movingPiece = boardArray[selectedSquare];
                             const nextBoard = [...boardArray];
                             nextBoard[i] = movingPiece; nextBoard[selectedSquare] = '.';
-                            
                             if (movingPiece === 'P' && Math.floor(i / 8) === 0) nextBoard[i] = 'Q';
                             if (movingPiece === 'p' && Math.floor(i / 8) === 7) nextBoard[i] = 'q';
 
                             selectedSquare = null; validDestinations = [];
-                            
                             let nextTurn = isWhiteTurn ? "p2" : "p1";
                             let opponentColor = isWhiteTurn ? "black" : "white";
                             
                             if (checkMatedStatus(nextBoard, opponentColor)) {
                                 update(ref(db, `matches/${matchId}`), { chessBoard: nextBoard, state: "chesswin", chessWinner: playerRole, endType: "checkmate" });
                             } else {
-                                update(ref(db, `matches/${matchId}`), {
-                                    chessBoard: nextBoard, chessTurn: nextTurn, state: "chessvisualdelay",
-                                    historyBoard: boardArray 
-                                });
+                                update(ref(db, `matches/${matchId}`), { chessBoard: nextBoard, chessTurn: nextTurn, state: "chessvisualdelay", historyBoard: boardArray });
                             }
                         } else {
                             if ((isWhiteTurn && isWhitePiece(cell)) || (!isWhiteTurn && isBlackPiece(cell))) {
@@ -821,6 +928,68 @@
             });
         }
 
+        /* Wordless Render Engine with validation hints */
+        function renderWordlessGrid(guessesList, secretWord) {
+            wordlessGridDisplay.innerHTML = "";
+            for (let row = 0; row < 10; row++) {
+                const rowDiv = document.createElement("div");
+                rowDiv.className = "wordless-row";
+                const currentGuess = guessesList ? guessesList[row] : null;
+
+                for (let col = 0; col < 5; col++) {
+                    const tile = document.createElement("div");
+                    tile.className = "wordless-tile";
+                    
+                    if (currentGuess) {
+                        const character = currentGuess[col];
+                        tile.innerText = character;
+                        if (character === secretWord[col]) {
+                            tile.classList.add("correct");
+                        } else if (secretWord.includes(character)) {
+                            tile.classList.add("present");
+                        } else {
+                            tile.classList.add("absent");
+                        }
+                    }
+                    rowDiv.appendChild(tile);
+                }
+                wordlessGridDisplay.appendChild(rowDiv);
+            }
+        }
+
+        wordlessGuessInput.onkeypress = (e) => {
+            if (e.key === "Enter") {
+                const guessValue = wordlessGuessInput.value.trim().toLowerCase();
+                if (guessValue.length !== 5) return;
+                wordlessGuessInput.value = ""; wordlessGuessInput.blur();
+
+                onValue(ref(db, `matches/${matchId}`), (snap) => {
+                    const mData = snap.val();
+                    if (!mData) return;
+                    const secret = mData.wordlessSecret;
+                    let currentGuesses = mData.wordlessGuesses ? [...mData.wordlessGuesses] : [];
+                    currentGuesses.push(guessValue);
+
+                    let nextTurn = playerRole === "p1" ? "p2" : "p1";
+                    
+                    if (guessValue === secret) {
+                        update(ref(db, `matches/${matchId}`), { wordlessGuesses: currentGuesses, state: "wordlesswin", wordlessWinner: playerRole });
+                    } else if (currentGuesses.length >= 10) {
+                        update(ref(db, `matches/${matchId}`), { wordlessGuesses: currentGuesses, wordlessSecret: WORD_POOL[Math.floor(Math.random() * WORD_POOL.length)], wordlessGuesses: [], state: "wordlessvisualdelay" });
+                    } else {
+                        update(ref(db, `matches/${matchId}`), { wordlessGuesses: currentGuesses, wordlessTurn: nextTurn, state: "wordlessvisualdelay" });
+                    }
+                }, { onlyOnce: true });
+            }
+        };
+
+        quitBtn.onclick = () => {
+            onValue(ref(db, `matches/${matchId}/quitVotes/${playerRole}`), (snap) => {
+                const currentVote = snap.val() || false;
+                set(ref(db, `matches/${matchId}/quitVotes/${playerRole}`), !currentVote);
+            }, { onlyOnce: true });
+        };
+
         function initMatch() {
             off(ref(db, "matches")); onDisconnect(ref(db, `matches/${matchId}`)).remove();
             lobbyScreen.classList.add("hidden"); gameScreen.classList.remove("hidden");
@@ -828,6 +997,27 @@
 
             currentMatchListener = onValue(ref(db, `matches/${matchId}`), (snap) => {
                 const data = snap.val(); if (!data) { handleDisconnection(); return; }
+
+                // Mutual Quit Vote Check
+                if (data.quitVotes) {
+                    let quitCount = 0;
+                    if (data.quitVotes.p1) quitCount++; if (data.quitVotes.p2) quitCount++;
+                    quitBtn.innerText = `Vote Quit to Lobby (${quitCount}/2)`;
+                    if (data.quitVotes[playerRole]) quitBtn.classList.add("voted"); else quitBtn.classList.remove("voted");
+
+                    if (data.quitVotes.p1 && data.quitVotes.p2) {
+                        if (playerRole === "p1") {
+                            update(ref(db, `matches/${matchId}`), {
+                                state: "voting", p1Ready: false, p2Ready: false, answers: null, votes: null, modeVotes: null, timeVotes: null,
+                                c4Board: Array(42).fill("empty"), c4Turn: "p1", chessBoard: INITIAL_CHESS, chessTurn: "p1", chessMovesLeft: 0,
+                                wordlessGuesses: [], wordlessTurn: "p1", wordlessMovesLeft: 0, streak: 0, quitVotes: { p1: false, p2: false }, lastSyncResult: ""
+                            });
+                        }
+                        return;
+                    }
+                }
+
+                if (data.state !== "voting") quitArea.classList.remove("hidden"); else quitArea.classList.add("hidden");
 
                 const currentStreak = data.streak || 0;
                 const activeMode = data.currentMode || "Classic";
@@ -848,11 +1038,13 @@
                     clearInterval(timerInterval); let syncString = "";
                     if (data.answers.p1 === data.answers.p2 && data.answers.p1 !== "[nothing]") {
                         syncString = `🎉 MIND SYNCED! Both typed: "${data.answers.p1.toUpperCase()}"!`;
-                        if (playerRole === "p1" && !["c4play","c4visualdelay","c4win","chessplay","chessvisualdelay","chesswin","resetting"].includes(data.state)) {
+                        if (playerRole === "p1" && !["c4play","c4visualdelay","c4win","chessplay","chessvisualdelay","chesswin","wordlessplay","wordlessvisualdelay","wordlesswin","resetting"].includes(data.state)) {
                             if (activeMode === "Connect 4") {
                                 update(ref(db, `matches/${matchId}`), { state: "c4play", streak: currentStreak + 1, answers: null, lastSyncResult: syncString });
                             } else if (activeMode === "Chess") {
                                 update(ref(db, `matches/${matchId}`), { state: "chessplay", chessMovesLeft: 10, streak: currentStreak + 1, answers: null, lastSyncResult: syncString });
+                            } else if (activeMode === "Wordless") {
+                                update(ref(db, `matches/${matchId}`), { state: "wordlessplay", wordlessMovesLeft: 2, streak: currentStreak + 1, answers: null, lastSyncResult: syncString });
                             } else {
                                 update(ref(db, `matches/${matchId}`), { state: "resetting", streak: currentStreak + 1, lastSyncResult: syncString });
                                 setTimeout(() => {
@@ -865,10 +1057,10 @@
                         }
                     } else {
                         syncString = `❌ Miss! P1: "${data.answers.p1}" | P2: "${data.answers.p2}". Retrying...`;
-                        if (playerRole === "p1" && !["c4play","c4visualdelay","c4win","chessplay","chessvisualdelay","chesswin","resetting"].includes(data.state)) {
+                        if (playerRole === "p1" && !["c4play","c4visualdelay","c4win","chessplay","chessvisualdelay","chesswin","wordlessplay","wordlessvisualdelay","wordlesswin","resetting"].includes(data.state)) {
                             update(ref(db, `matches/${matchId}`), { state: "resetting", streak: 0, lastSyncResult: syncString });
                             setTimeout(() => {
-                                const randomTheme = ["Connect 4", "Chess"].includes(activeMode) ? THEMES[Math.floor(Math.random() * THEMES.length)] : data.currentTheme;
+                                const randomTheme = ["Connect 4", "Chess", "Wordless"].includes(activeMode) ? THEMES[Math.floor(Math.random() * THEMES.length)] : data.currentTheme;
                                 update(ref(db, `matches/${matchId}`), { state: "waiting", p1Ready: false, p2Ready: false, answers: null, currentTheme: randomTheme });
                             }, 4000);
                         }
@@ -891,19 +1083,19 @@
                     if (data.modeVotes?.p1 && data.modeVotes?.p2) {
                         let chosenMode = data.modeVotes.p1 === data.modeVotes.p2 ? data.modeVotes.p1 : null;
                         
-                        // Consolidated validation: ensure both users have filled valid parameters before resolving
                         if (chosenMode && chosenMode.startsWith("Normal ")) {
                             if (playerRole === "p1") {
                                 if (chosenMode === "Normal Connect 4") {
                                     update(ref(db, `matches/${matchId}`), { currentMode: chosenMode, state: "c4play", votes: null, modeVotes: null, timeVotes: null, c4Board: Array(42).fill("empty"), c4Turn: "p1", lastSyncResult: "" });
                                 } else if (chosenMode === "Normal Chess") {
                                     update(ref(db, `matches/${matchId}`), { currentMode: chosenMode, state: "chessplay", votes: null, modeVotes: null, timeVotes: null, chessBoard: INITIAL_CHESS, chessTurn: "p1", chessMovesLeft: 9999, lastSyncResult: "" });
+                                } else if (chosenMode === "Normal Wordless") {
+                                    update(ref(db, `matches/${matchId}`), { currentMode: chosenMode, state: "wordlessplay", votes: null, modeVotes: null, timeVotes: null, wordlessSecret: WORD_POOL[Math.floor(Math.random() * WORD_POOL.length)], wordlessGuesses: [], wordlessTurn: "p1", wordlessMovesLeft: 9999, lastSyncResult: "" });
                                 }
                             }
                             return;
                         } else if (data.votes?.p1 && data.votes?.p2 && data.timeVotes?.p1 && data.timeVotes?.p2) {
                             if (playerRole === "p1") {
-                                // If they didn't pick the same mode, flip a coin
                                 if (!chosenMode) chosenMode = Math.random() > 0.5 ? data.modeVotes.p1 : data.modeVotes.p2;
                                 let chosenTheme = data.votes.p1 === data.votes.p2 ? data.votes.p1 : (Math.random() > 0.5 ? data.votes.p1 : data.votes.p2);
                                 let chosenTime = data.timeVotes.p1 === data.timeVotes.p2 ? data.timeVotes.p1 : (Math.random() > 0.5 ? data.timeVotes.p1 : data.timeVotes.p2);
@@ -916,30 +1108,30 @@
 
                 if (data.state === "voting") {
                     resultAlert.innerText = "🗳️ Vote for configuration options!";
-                    votingArea.classList.remove("hidden"); readyArea.classList.add("hidden"); typingArea.classList.add("hidden"); timerContainer.classList.add("hidden"); c4Area.classList.add("hidden"); chessArea.classList.add("hidden");
+                    votingArea.classList.remove("hidden"); readyArea.classList.add("hidden"); typingArea.classList.add("hidden"); timerContainer.classList.add("hidden"); c4Area.classList.add("hidden"); chessArea.classList.add("hidden"); wordlessArea.classList.add("hidden");
                 }
                 if (data.state === "waiting") {
-                    votingArea.classList.add("hidden"); readyArea.classList.remove("hidden"); readyBtn.classList.remove("hidden"); typingArea.classList.add("hidden"); timerContainer.classList.add("hidden"); c4Area.classList.add("hidden"); chessArea.classList.add("hidden");
+                    votingArea.classList.add("hidden"); readyArea.classList.remove("hidden"); readyBtn.classList.remove("hidden"); typingArea.classList.add("hidden"); timerContainer.classList.add("hidden"); c4Area.classList.add("hidden"); chessArea.classList.add("hidden"); wordlessArea.classList.add("hidden");
                     const myReadyStatus = data[`${playerRole}Ready`]; readyBtn.disabled = myReadyStatus;
                     statusMsg.innerText = myReadyStatus ? "Waiting for partner..." : `Ready up! Timer set to: ${activeDuration}s`;
                     if (data.lastSyncResult) resultAlert.innerHTML = data.lastSyncResult; else resultAlert.innerText = "⏳ Awaiting matching confirmations.";
                     if (data.p1Ready && data.p2Ready && playerRole === "p1") runSyncTimer(activeDuration);
                 }
                 if (data.state === "typing") {
-                    votingArea.classList.add("hidden"); readyArea.classList.add("hidden"); typingArea.classList.remove("hidden"); timerContainer.classList.remove("hidden"); c4Area.classList.add("hidden"); chessArea.classList.add("hidden");
+                    votingArea.classList.add("hidden"); readyArea.classList.add("hidden"); typingArea.classList.remove("hidden"); timerContainer.classList.remove("hidden"); c4Area.classList.add("hidden"); chessArea.classList.add("hidden"); wordlessArea.classList.add("hidden");
                     timerText.innerText = data.timer ?? activeDuration; resultAlert.innerText = "🧠 Enter your matching word now!";
                     if (data.timer === 0 && !hasSubmitted) evaluateRound();
                 }
 
                 // Connect 4 Views
                 if (data.state === "c4play") {
-                    votingArea.classList.add("hidden"); readyArea.classList.add("hidden"); typingArea.classList.add("hidden"); timerContainer.classList.add("hidden"); c4Area.classList.remove("hidden"); chessArea.classList.add("hidden");
+                    votingArea.classList.add("hidden"); readyArea.classList.add("hidden"); typingArea.classList.add("hidden"); timerContainer.classList.add("hidden"); c4Area.classList.remove("hidden"); chessArea.classList.add("hidden"); wordlessArea.classList.add("hidden");
                     const isMyTurn = data.c4Turn === playerRole; c4Status.innerText = isMyTurn ? "🟢 YOUR TURN! Drop a piece." : "🔴 Opponent's turn to drop...";
                     resultAlert.innerText = activeMode === "Normal Connect 4" ? "🎮 Mode: Normal Connect 4" : data.lastSyncResult;
                     renderC4Board(data.c4Board, isMyTurn);
                 }
                 if (data.state === "c4visualdelay") {
-                    votingArea.classList.add("hidden"); readyArea.classList.add("hidden"); typingArea.classList.add("hidden"); timerContainer.classList.add("hidden"); c4Area.classList.remove("hidden"); chessArea.classList.add("hidden");
+                    votingArea.classList.add("hidden"); readyArea.classList.add("hidden"); typingArea.classList.add("hidden"); timerContainer.classList.add("hidden"); c4Area.classList.remove("hidden"); chessArea.classList.add("hidden"); wordlessArea.classList.add("hidden");
                     renderC4Board(data.c4Board, false);
                     if (!window.c4CountdownInterval) {
                         let localTimeLeft = 1.3;
@@ -958,7 +1150,7 @@
                     }
                 }
                 if (data.state === "c4win") {
-                    votingArea.classList.add("hidden"); readyArea.classList.add("hidden"); typingArea.classList.add("hidden"); timerContainer.classList.add("hidden"); c4Area.classList.remove("hidden"); chessArea.classList.add("hidden");
+                    votingArea.classList.add("hidden"); readyArea.classList.add("hidden"); typingArea.classList.add("hidden"); timerContainer.classList.add("hidden"); c4Area.classList.remove("hidden"); chessArea.classList.add("hidden"); wordlessArea.classList.add("hidden");
                     renderC4Board(data.c4Board, false, data.winningCells || []);
                     resultAlert.innerText = data.c4Winner === playerRole ? "🎉 CONNECT 4 VICTORY! YOU WIN!" : "💀 MATCH OVER! OPPONENT WON!";
                     if (!window.c4CountdownInterval) {
@@ -971,7 +1163,7 @@
                     }
                     if (playerRole === "p1" && !window.c4DelayTimeout) {
                         window.c4DelayTimeout = setTimeout(() => {
-                            update(ref(db, `matches/${matchId}`), { state: "voting", currentTheme: THEMES[Math.floor(Math.random() * THEMES.length)], p1Ready: false, p2Ready: false, answers: null, votes: null, modeVotes: null, timeVotes: null, c4Board: Array(42).fill("empty"), c4Turn: "p1", streak: 0, lastSyncResult: "", winningCells: null, c4Winner: null });
+                            update(ref(db, `matches/${matchId}`), { state: "voting", currentTheme: THEMES[Math.floor(Math.random() * THEMES.length)], p1Ready: false, p2Ready: false, answers: null, votes: null, modeVotes: null, timeVotes: null, c4Board: Array(42).fill("empty"), c4Turn: "p1", streak: 0, quitVotes: { p1: false, p2: false }, lastSyncResult: "", winningCells: null, c4Winner: null });
                             window.c4DelayTimeout = null;
                         }, 7800);
                     }
@@ -979,16 +1171,11 @@
 
                 // Chess Handling Views
                 if (data.state === "chessplay") {
-                    votingArea.classList.add("hidden"); readyArea.classList.add("hidden"); typingArea.classList.add("hidden"); timerContainer.classList.add("hidden"); c4Area.classList.add("hidden"); chessArea.classList.remove("hidden");
-                    
+                    votingArea.classList.add("hidden"); readyArea.classList.add("hidden"); typingArea.classList.add("hidden"); timerContainer.classList.add("hidden"); c4Area.classList.add("hidden"); chessArea.classList.remove("hidden"); wordlessArea.classList.add("hidden");
                     const isMyTurn = data.chessTurn === playerRole;
                     const movesLeft = data.chessMovesLeft || 0;
                     const currentTeamColor = (playerRole === "p1") ? "white" : "black";
-                    
-                    let boardHeadingText = "";
-                    if (isKingInCheck(data.chessBoard, currentTeamColor)) {
-                        boardHeadingText = "⚠️ CHECK! ";
-                    }
+                    let boardHeadingText = ""; if (isKingInCheck(data.chessBoard, currentTeamColor)) boardHeadingText = "⚠️ CHECK! ";
 
                     if (activeMode === "Normal Chess") {
                         chessStatus.innerText = boardHeadingText + (isMyTurn ? "🟢 YOUR TURN! Make a chess move." : "🔴 Opponent's turn to move piece...");
@@ -998,22 +1185,13 @@
                         resultAlert.innerText = data.lastSyncResult;
                     }
 
-                    if (data.undoRequested && data.undoRequested !== playerRole) {
-                        chessGrantUndoBtn.classList.remove("hidden");
-                        chessUndoBtn.classList.add("hidden");
-                    } else {
-                        chessGrantUndoBtn.classList.add("hidden");
-                        chessUndoBtn.classList.remove("hidden");
-                        chessUndoBtn.disabled = (data.undoRequested === playerRole);
-                        chessUndoBtn.innerText = data.undoRequested === playerRole ? "Awaiting Choice..." : "Request Undo";
-                    }
-
+                    if (data.undoRequested && data.undoRequested !== playerRole) { chessGrantUndoBtn.classList.remove("hidden"); chessUndoBtn.classList.add("hidden"); } 
+                    else { chessGrantUndoBtn.classList.add("hidden"); chessUndoBtn.classList.remove("hidden"); chessUndoBtn.disabled = (data.undoRequested === playerRole); chessUndoBtn.innerText = data.undoRequested === playerRole ? "Awaiting Choice..." : "Request Undo"; }
                     renderChessBoard(data.chessBoard, isMyTurn, data);
                 }
                 if (data.state === "chessvisualdelay") {
-                    votingArea.classList.add("hidden"); readyArea.classList.add("hidden"); typingArea.classList.add("hidden"); timerContainer.classList.add("hidden"); c4Area.classList.add("hidden"); chessArea.classList.remove("hidden");
+                    votingArea.classList.add("hidden"); readyArea.classList.add("hidden"); typingArea.classList.add("hidden"); timerContainer.classList.add("hidden"); c4Area.classList.add("hidden"); chessArea.classList.remove("hidden"); wordlessArea.classList.add("hidden");
                     renderChessBoard(data.chessBoard, false, data);
-
                     if (!window.chessCountdownInterval) {
                         let localChessTime = 0.3;
                         window.chessCountdownInterval = setInterval(() => {
@@ -1022,28 +1200,20 @@
                             else chessStatus.innerText = `⏳ Recording piece movement... (${Math.max(0, localChessTime).toFixed(1)}s)`;
                         }, 100);
                     }
-
                     if (playerRole === "p1" && !window.chessDelayTimeout) {
                         window.chessDelayTimeout = setTimeout(() => {
                             const nextMovesCount = (activeMode === "Normal Chess") ? 9999 : (data.chessMovesLeft - 1);
-                            if (nextMovesCount <= 0) {
-                                update(ref(db, `matches/${matchId}`), { state: "waiting", chessMovesLeft: 0, p1Ready: false, p2Ready: false, answers: null, currentTheme: THEMES[Math.floor(Math.random() * THEMES.length)] });
-                            } else {
-                                update(ref(db, `matches/${matchId}/`), { state: "chessplay", chessMovesLeft: nextMovesCount });
-                            }
+                            if (nextMovesCount <= 0) { update(ref(db, `matches/${matchId}`), { state: "waiting", chessMovesLeft: 0, p1Ready: false, p2Ready: false, answers: null, currentTheme: THEMES[Math.floor(Math.random() * THEMES.length)] }); } 
+                            else { update(ref(db, `matches/${matchId}/`), { state: "chessplay", chessMovesLeft: nextMovesCount }); }
                             window.chessDelayTimeout = null;
                         }, 300);
                     }
                 }
                 if (data.state === "chesswin") {
-                    votingArea.classList.add("hidden"); readyArea.classList.add("hidden"); typingArea.classList.add("hidden"); timerContainer.classList.add("hidden"); c4Area.classList.add("hidden"); chessArea.classList.remove("hidden");
+                    votingArea.classList.add("hidden"); readyArea.classList.add("hidden"); typingArea.classList.add("hidden"); timerContainer.classList.add("hidden"); c4Area.classList.add("hidden"); chessArea.classList.remove("hidden"); wordlessArea.classList.add("hidden");
                     renderChessBoard(data.chessBoard, false, data);
-                    
-                    if (data.endType === "resign") {
-                        resultAlert.innerText = data.chessWinner === playerRole ? "🏳️ OPPONENT RESIGNED! YOU WIN!" : "🏳️ YOU RESIGNED! MATCH OVER!";
-                    } else {
-                        resultAlert.innerText = data.chessWinner === playerRole ? "🎉 CHESS CHECKMATE VICTORY! YOU WIN!" : "💀 CHECKMATE! YOU LOSE!";
-                    }
+                    if (data.endType === "resign") resultAlert.innerText = data.chessWinner === playerRole ? "🏳️ OPPONENT RESIGNED! YOU WIN!" : "🏳️ YOU RESIGNED! MATCH OVER!";
+                    else resultAlert.innerText = data.chessWinner === playerRole ? "🎉 CHESS CHECKMATE VICTORY! YOU WIN!" : "💀 CHECKMATE! YOU LOSE!";
 
                     if (!window.chessCountdownInterval) {
                         let winChessTime = 7.8;
@@ -1055,9 +1225,74 @@
                     }
                     if (playerRole === "p1" && !window.chessDelayTimeout) {
                         window.chessDelayTimeout = setTimeout(() => {
-                            update(ref(db, `matches/${matchId}`), { state: "voting", currentTheme: THEMES[Math.floor(Math.random() * THEMES.length)], p1Ready: false, p2Ready: false, answers: null, votes: null, modeVotes: null, timeVotes: null, c4Board: Array(42).fill("empty"), c4Turn: "p1", chessBoard: INITIAL_CHESS, chessTurn: "p1", chessMovesLeft: 0, undoRequested: "", streak: 0, lastSyncResult: "", chessWinner: null, endType: null });
+                            update(ref(db, `matches/${matchId}`), { state: "voting", currentTheme: THEMES[Math.floor(Math.random() * THEMES.length)], p1Ready: false, p2Ready: false, answers: null, votes: null, modeVotes: null, timeVotes: null, c4Board: Array(42).fill("empty"), c4Turn: "p1", chessBoard: INITIAL_CHESS, chessTurn: "p1", chessMovesLeft: 0, undoRequested: "", streak: 0, quitVotes: { p1: false, p2: false }, lastSyncResult: "", chessWinner: null, endType: null });
                             window.chessDelayTimeout = null;
                         }, 7800);
+                    }
+                }
+
+                // Wordless Handling Views
+                if (data.state === "wordlessplay") {
+                    votingArea.classList.add("hidden"); readyArea.classList.add("hidden"); typingArea.classList.add("hidden"); timerContainer.classList.add("hidden"); c4Area.classList.add("hidden"); chessArea.classList.add("hidden"); wordlessArea.classList.remove("hidden");
+                    const isMyTurn = data.wordlessTurn === playerRole;
+                    const roundsRemaining = data.wordlessMovesLeft || 0;
+
+                    if (activeMode === "Normal Wordless") {
+                        wordlessStatus.innerText = isMyTurn ? "🟢 YOUR TURN! Type a 5-letter word guess." : "🔴 Opponent's turn to guess...";
+                        resultAlert.innerText = "🎮 Mode: Normal alternating Wordless";
+                    } else {
+                        wordlessStatus.innerText = isMyTurn ? `🟢 YOUR TURN! [${roundsRemaining} sync team turns remaining]` : `🔴 Opponent's turn... [${roundsRemaining} sync team turns remaining]`;
+                        resultAlert.innerText = data.lastSyncResult;
+                    }
+
+                    if (isMyTurn) wordlessInputArea.classList.remove("hidden"); else wordlessInputArea.classList.add("hidden");
+                    renderWordlessGrid(data.wordlessGuesses, data.wordlessSecret);
+                }
+                if (data.state === "wordlessvisualdelay") {
+                    votingArea.classList.add("hidden"); readyArea.classList.add("hidden"); typingArea.classList.add("hidden"); timerContainer.classList.add("hidden"); c4Area.classList.add("hidden"); chessArea.classList.add("hidden"); wordlessArea.classList.remove("hidden");
+                    wordlessInputArea.classList.add("hidden");
+                    renderWordlessGrid(data.wordlessGuesses, data.wordlessSecret);
+
+                    if (!window.wordlessCountdownInterval) {
+                        let localWTime = 0.5;
+                        window.wordlessCountdownInterval = setInterval(() => {
+                            localWTime -= 0.1;
+                            if (localWTime <= 0) { clearInterval(window.wordlessCountdownInterval); window.wordlessCountdownInterval = null; }
+                            else wordlessStatus.innerText = `⏳ Submitting guess matrix... (${Math.max(0, localWTime).toFixed(1)}s)`;
+                        }, 100);
+                    }
+
+                    if (playerRole === "p1" && !window.wordlessDelayTimeout) {
+                        window.wordlessDelayTimeout = setTimeout(() => {
+                            const nextMovesCount = (activeMode === "Normal Wordless") ? 9999 : (data.wordlessMovesLeft - 1);
+                            if (nextMovesCount <= 0) {
+                                update(ref(db, `matches/${matchId}`), { state: "waiting", wordlessMovesLeft: 0, p1Ready: false, p2Ready: false, answers: null, currentTheme: THEMES[Math.floor(Math.random() * THEMES.length)] });
+                            } else {
+                                update(ref(db, `matches/${matchId}`), { state: "wordlessplay", wordlessMovesLeft: nextMovesCount });
+                            }
+                            window.wordlessDelayTimeout = null;
+                        }, 500);
+                    }
+                }
+                if (data.state === "wordlesswin") {
+                    votingArea.classList.add("hidden"); readyArea.classList.add("hidden"); typingArea.classList.add("hidden"); timerContainer.classList.add("hidden"); c4Area.classList.add("hidden"); chessArea.classList.add("hidden"); wordlessArea.classList.remove("hidden");
+                    wordlessInputArea.classList.add("hidden");
+                    renderWordlessGrid(data.wordlessGuesses, data.wordlessSecret);
+                    resultAlert.innerText = data.wordlessWinner === playerRole ? `🎉 CORRECT! THE WORD WAS "${data.wordlessSecret.toUpperCase()}"! YOU WIN!` : `💀 OPPONENT GUESSED "${data.wordlessSecret.toUpperCase()}" FIRST!`;
+
+                    if (!window.wordlessCountdownInterval) {
+                        let winWTime = 7.0;
+                        window.wordlessCountdownInterval = setInterval(() => {
+                            winWTime -= 0.1;
+                            if (winWTime <= 0) { clearInterval(window.wordlessCountdownInterval); window.wordlessCountdownInterval = null; }
+                            else wordlessStatus.innerText = `Lobby return configuration in (${Math.max(0, winWTime).toFixed(1)}s)`;
+                        }, 100);
+                    }
+                    if (playerRole === "p1" && !window.wordlessDelayTimeout) {
+                        window.wordlessDelayTimeout = setTimeout(() => {
+                            update(ref(db, `matches/${matchId}`), { state: "voting", currentTheme: THEMES[Math.floor(Math.random() * THEMES.length)], p1Ready: false, p2Ready: false, answers: null, votes: null, modeVotes: null, timeVotes: null, c4Board: Array(42).fill("empty"), c4Turn: "p1", chessBoard: INITIAL_CHESS, chessTurn: "p1", chessMovesLeft: 0, wordlessSecret: WORD_POOL[Math.floor(Math.random() * WORD_POOL.length)], wordlessGuesses: [], wordlessTurn: "p1", wordlessMovesLeft: 0, streak: 0, quitVotes: { p1: false, p2: false }, lastSyncResult: "", wordlessWinner: null });
+                            window.wordlessDelayTimeout = null;
+                        }, 7000);
                     }
                 }
             });
@@ -1083,13 +1318,8 @@
                     let previousTurn = data.chessTurn === "p1" ? "p2" : "p1";
                     let currentMovesCount = data.chessMovesLeft;
                     let calculatedMoves = (data.currentMode === "Normal Chess") ? 9999 : (currentMovesCount + 1);
-                    
                     off(ref(db, `matches/${matchId}/historyBoard`));
-                    update(ref(db, `matches/${matchId}`), {
-                        chessBoard: data.historyBoard, chessTurn: previousTurn,
-                        chessMovesLeft: calculatedMoves, undoRequested: "", historyBoard: null,
-                        state: "chessplay"
-                    });
+                    update(ref(db, `matches/${matchId}`), { chessBoard: data.historyBoard, chessTurn: previousTurn, chessMovesLeft: calculatedMoves, undoRequested: "", historyBoard: null, state: "chessplay" });
                 }
             }, { onlyOnce: true });
         };
