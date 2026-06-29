@@ -329,6 +329,7 @@
 
         let matchId = null, playerRole = null, timerInterval = null, currentMatchListener = null;
         let hasSubmitted = false; 
+        window.c4DelayTimeout = null;
 
         const lobbyScreen = document.getElementById("lobbyScreen");
         const gameScreen = document.getElementById("gameScreen");
@@ -527,19 +528,6 @@
                                     c4Turn: nextTurn, 
                                     state: "c4visualdelay"
                                 });
-
-                                setTimeout(() => {
-                                    if (playerRole === "p1") {
-                                        const randomTheme = THEMES[Math.floor(Math.random() * THEMES.length)];
-                                        update(ref(db, `matches/${matchId}`), { 
-                                            state: "waiting", 
-                                            p1Ready: false, 
-                                            p2Ready: false, 
-                                            answers: null,
-                                            currentTheme: randomTheme
-                                        });
-                                    }
-                                }, 2500);
                             }
                         }
                     };
@@ -716,6 +704,28 @@
 
                     c4Status.innerText = "⏳ Piece placed! Syncing next moves...";
                     renderC4Board(data.c4Board, false); 
+
+                    // CENTRALIZED FIX: Player 1 controls the loop transition globally on delay state detection
+                    if (playerRole === "p1") {
+                        if (!window.c4DelayTimeout) {
+                            window.c4DelayTimeout = setTimeout(() => {
+                                const randomTheme = THEMES[Math.floor(Math.random() * THEMES.length)];
+                                update(ref(db, `matches/${matchId}`), { 
+                                    state: "waiting", 
+                                    p1Ready: false, 
+                                    p2Ready: false, 
+                                    answers: null,
+                                    currentTheme: randomTheme
+                                });
+                                window.c4DelayTimeout = null;
+                            }, 2500);
+                        }
+                    }
+                } else {
+                    if (window.c4DelayTimeout) {
+                        clearTimeout(window.c4DelayTimeout);
+                        window.c4DelayTimeout = null;
+                    }
                 }
 
                 if (data.state === "c4win") {
