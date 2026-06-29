@@ -14,10 +14,10 @@
         }
         
         body {
-            background: #5b4968;
+            background: #1a191f;
             color: #e1e1e6;
             display: flex;
-            justify-content: center;
+            justify(content: center);
             align-items: center;
             min-height: 100vh;
             min-height: 100dvh;
@@ -30,15 +30,16 @@
             max-width: 420px;
             height: 90vh;
             height: 85dvh;
-            background: #a34a92;
+            background: #2d2233;
             padding: 16px;
             border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.6);
             text-align: center;
             display: flex;
             flex-direction: column;
             gap: 12px;
             justify-content: space-between;
+            border: 1px solid #42334a;
         }
 
         .screen-content {
@@ -51,10 +52,10 @@
 
         .hidden { display: none !important; }
 
-        h1 { color: #00adb5; font-size: 26px; letter-spacing: 0.5px; }
+        h1 { color: #ff8bb6; font-size: 26px; letter-spacing: 0.5px; }
         
         button {
-            background: #00adb5;
+            background: #ff8bb6;
             color: #fff;
             border: none;
             padding: 14px;
@@ -66,15 +67,15 @@
             transition: background 0.2s, transform 0.1s;
         }
         button:active { transform: scale(0.98); }
-        button:disabled { background: #4a4a4a; cursor: not-allowed; transform: none; }
+        button:disabled { background: #423845; color: #756a7a; cursor: not-allowed; transform: none; }
 
         .alert-banner {
-            background: #29292e;
+            background: #1f1824;
             padding: 12px;
             border-radius: 10px;
             font-weight: bold;
             font-size: 14px;
-            border: 1px solid #323238;
+            border: 1px solid #3d2f44;
         }
         #resultAlert { color: #ffca28; margin-top: 4px; display: block; font-size: 13px;}
         #themeText { color: #00adb5; }
@@ -89,11 +90,11 @@
             overflow-y: auto;
         }
         .theme-btn {
-            background: #29292e;
-            color: #a8a8b3;
+            background: #1f1824;
+            color: #bfaec4;
             padding: 12px;
             font-size: 13px;
-            border: 1px solid #323238;
+            border: 1px solid #3d2f44;
             border-radius: 8px;
             cursor: pointer;
             text-align: center;
@@ -104,18 +105,18 @@
         .input-style {
             width: 100%;
             padding: 14px;
-            background: #121214;
-            border: 2px solid #323238;
+            background: #131017;
+            border: 2px solid #3d2f44;
             color: #fff;
             border-radius: 10px;
             font-size: 16px;
             text-align: center;
             outline: none;
         }
-        .input-style:focus { border-color: #00adb5; }
+        .input-style:focus { border-color: #ff8bb6; }
 
         .chat-box {
-            background: #121214;
+            background: #131017;
             flex-grow: 1;
             height: 120px;
             overflow-y: auto;
@@ -124,7 +125,7 @@
             display: flex;
             flex-direction: column;
             gap: 6px;
-            border: 1px solid #323238;
+            border: 1px solid #3d2f44;
         }
         
         .bubble {
@@ -137,15 +138,15 @@
         }
         
         .bubble.me {
-            background: #00adb5;
+            background: #ff8bb6;
             color: #fff;
             align-self: flex-end;
             border-bottom-right-radius: 2px;
         }
         
         .bubble.them {
-            background: #29292e;
-            color: #e1e1e6;
+            background: #00adb5;
+            color: #fff;
             align-self: flex-start;
             border-bottom-left-radius: 2px;
         }
@@ -169,9 +170,9 @@
     <div class="container">
         <div id="lobbyScreen" class="screen-content">
             <h1>Mind Meld</h1>
-            <p style="color: #a8a8b3; font-size: 15px;">Sync thoughts with another player. Type the exact same word to win.</p>
+            <p style="color: #bfaec4; font-size: 15px;">Sync thoughts with another player. Type the exact same word to win.</p>
             <button id="findBtn">Find Opponent</button>
-            <p id="loadingText" class="hidden" style="color: #00adb5; font-weight: bold;">Searching for a partner...</p>
+            <p id="loadingText" class="hidden" style="color: #ff8bb6; font-weight: bold;">Searching for a partner...</p>
         </div>
 
         <div id="gameScreen" class="screen-content hidden">
@@ -181,12 +182,12 @@
             </div>
 
             <div id="votingArea" class="hidden">
-                <p style="font-size: 13px; color: #a8a8b3; text-align: left; padding-left: 2px;">Vote for a theme:</p>
+                <p style="font-size: 13px; color: #bfaec4; text-align: left; padding-left: 2px;">Vote for a theme:</p>
                 <div class="theme-box" id="themesGrid"></div>
             </div>
 
             <div id="readyArea" class="hidden">
-                <p id="statusMsg" style="margin-bottom: 8px; font-size: 14px; color: #a8a8b3;">Match Connected!</p>
+                <p id="statusMsg" style="margin-bottom: 8px; font-size: 14px; color: #bfaec4;">Match Connected!</p>
                 <button id="readyBtn">I'm Ready</button>
             </div>
 
@@ -224,7 +225,7 @@
         localStorage.setItem("mm_pid", playerId);
 
         let matchId = null, playerRole = null, timerInterval = null, currentMatchListener = null;
-        let hasSubmitted = false; // Prevents race conditions from wiping data
+        let hasSubmitted = false; 
 
         const lobbyScreen = document.getElementById("lobbyScreen");
         const gameScreen = document.getElementById("gameScreen");
@@ -341,11 +342,10 @@
                 themeText.innerText = data.currentTheme;
                 renderThemeButtons(data.votes);
 
-                // 1. GLOBAL RESULTS SYNC CHECK (Checks real-time absolute values)
                 if (data.answers?.p1 && data.answers?.p2) {
                     clearInterval(timerInterval);
                     if (data.answers.p1 === data.answers.p2 && data.answers.p1 !== "[nothing]") {
-                        resultAlert.innerHTML = `🎉 MIND SYNCED! Both typed: <span style="color:#00adb5;">"${data.answers.p1.toUpperCase()}"</span>!`;
+                        resultAlert.innerHTML = `🎉 MIND SYNCED! Both typed: <span style="color:#ff8bb6;">"${data.answers.p1.toUpperCase()}"</span>!`;
                         if (playerRole === "p1" && data.state !== "resetting") {
                             update(ref(db, `matches/${matchId}`), { state: "resetting" });
                             setTimeout(() => {
@@ -371,7 +371,6 @@
                     return; 
                 }
 
-                // Reset submission locks upon transitioning back to setup states
                 if (data.state === "voting" || data.state === "waiting") {
                     hasSubmitted = false;
                 }
@@ -461,7 +460,7 @@
             hasSubmitted = true; 
             const typedVal = wordInput.value.trim().toLowerCase() || "[nothing]";
             wordInput.value = "";
-            wordInput.blur(); // Drops mobile keyboard out of viewport elegantly
+            wordInput.blur(); 
 
             set(ref(db, `matches/${matchId}/answers/${playerRole}`), typedVal);
         }
@@ -480,7 +479,7 @@
             if(!m) return;
             push(ref(db, `matches/${matchId}/chat`), { uid: playerId, msg: m, sys: false });
             chatInput.value = "";
-            chatInput.blur();
+            // chatInput.blur(); // Removed so focus stays on the field and keyboard remains open
         }
     </script>
 </body>
