@@ -131,20 +131,7 @@
         .mode-btn.active { background: #ff8bb6; border-color: #ff8bb6; }
         .time-btn.active { background: #ffca28; border-color: #ffca28; color: #131017; }
 
-        .input-style {
-            width: 100%;
-            padding: 12px;
-            background: #131017;
-            border: 2px solid #3d2f44;
-            color: #fff;
-            border-radius: 10px;
-            font-size: 15px;
-            text-align: center;
-            outline: none;
-        }
-        .input-style:focus { border-color: #ff8bb6; }
-
-        /* Connect 4 Board */
+        /* Connect 4 Board & Dropping Animation */
         #c4Area {
             background: #1a1520;
             padding: 10px;
@@ -160,19 +147,28 @@
             border-radius: 10px;
             max-width: 270px;
             margin: 0 auto;
+            overflow: hidden;
         }
         .c4-slot {
             aspect-ratio: 1 / 1;
             border-radius: 50%;
             background: #131017;
             border: 1px solid #3d2f44;
-            cursor: pointer;
-            transition: background 0.15s, transform 0.1s;
+            position: relative;
         }
-        .c4-slot:active { transform: scale(0.9); }
+        .c4-slot.p1, .c4-slot.p2 {
+            animation: c4-drop 0.4s cubic-bezier(0.55, 0.055, 0.675, 0.19) forwards;
+        }
         .c4-slot.p1 { background: #ff8bb6; box-shadow: 0 0 8px #ff8bb6; }
         .c4-slot.p2 { background: #00adb5; box-shadow: 0 0 8px #00adb5; }
-        .c4-slot.empty { cursor: pointer; }
+        .c4-slot.empty { cursor: pointer; transition: background 0.15s, transform 0.1s; }
+        .c4-slot.empty:active { transform: scale(0.9); }
+
+        @keyframes c4-drop {
+            0% { transform: translateY(-200px); opacity: 0; }
+            60% { opacity: 1; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
 
         /* Reactions Panel */
         .reaction-deck {
@@ -497,6 +493,7 @@
             boardArray.forEach((cell, i) => {
                 const slot = document.createElement("div");
                 slot.className = "c4-slot " + cell;
+                if (cell === "empty") slot.classList.add("empty");
                 
                 if (interactive && cell === "empty") {
                     slot.onclick = () => {
@@ -526,7 +523,6 @@
 
                                 setTimeout(() => {
                                     if (playerRole === "p1") {
-                                        // AUTOMATICALLY ROTATE THE THEME CATEGORY FOR NEXT ROUND
                                         const randomTheme = THEMES[Math.floor(Math.random() * THEMES.length)];
                                         update(ref(db, `matches/${matchId}`), { 
                                             state: "waiting", 
@@ -582,6 +578,7 @@
                         syncString = `🎉 MIND SYNCED! Both typed: "${data.answers.p1.toUpperCase()}"!`;
                         if (playerRole === "p1" && data.state !== "resetting" && data.state !== "c4play" && data.state !== "c4visualdelay" && data.state !== "c4win") {
                             if (activeMode === "Connect 4") {
+                                // Clear answers and swap nodes safely to c4play loop
                                 update(ref(db, `matches/${matchId}`), { state: "c4play", streak: currentStreak + 1, answers: null, lastSyncResult: syncString });
                             } else {
                                 update(ref(db, `matches/${matchId}`), { state: "resetting", streak: currentStreak + 1, lastSyncResult: syncString });
@@ -599,7 +596,6 @@
                         if (playerRole === "p1" && data.state !== "resetting" && data.state !== "c4play" && data.state !== "c4visualdelay" && data.state !== "c4win") {
                             update(ref(db, `matches/${matchId}`), { state: "resetting", streak: 0, lastSyncResult: syncString });
                             setTimeout(() => {
-                                // AUTOMATICALLY ROTATE THE THEME FOR NEXT TRY IN CONNECT 4
                                 const randomTheme = (activeMode === "Connect 4") ? THEMES[Math.floor(Math.random() * THEMES.length)] : data.currentTheme;
                                 update(ref(db, `matches/${matchId}`), { 
                                     state: "waiting", 
@@ -660,7 +656,6 @@
                     readyBtn.disabled = myReadyStatus;
                     statusMsg.innerText = myReadyStatus ? "Waiting for partner..." : `Ready up! Timer set to: ${activeDuration}s`;
                     
-                    // PERSIST SYNC STATUS TEXT UNTIL THEY PRESS READY AGAIN
                     if (data.lastSyncResult) {
                         resultAlert.innerHTML = data.lastSyncResult;
                     } else {
@@ -761,7 +756,6 @@
         readyBtn.onclick = () => {
             const upd = {}; 
             upd[`${playerRole}Ready`] = true;
-            // Clear out the synced message state exactly when a player chooses to ready up again
             upd["lastSyncResult"] = ""; 
             update(ref(db, `matches/${matchId}`), upd);
         };
