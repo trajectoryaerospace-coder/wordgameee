@@ -53,6 +53,16 @@
         .hidden { display: none !important; }
 
         h1 { color: #ff8bb6; font-size: 26px; letter-spacing: 0.5px; }
+
+        .special-dedication {
+            color: #ff8bb6;
+            font-size: 16px;
+            font-weight: bold;
+            font-style: italic;
+            text-shadow: 0 0 8px rgba(255, 139, 182, 0.6);
+            margin: 8px 0;
+            letter-spacing: 1px;
+        }
         
         button {
             background: #ff8bb6;
@@ -127,16 +137,18 @@
             text-align: center;
             font-weight: 500;
         }
-        .theme-btn.active, .mode-btn.active, .time-btn.active { background: #00adb5; color: #fff; border-color: #00adb5; }
+        .theme-btn.active, .mode-btn.active { background: #00adb5; color: #fff; border-color: #00adb5; }
         .mode-btn.active { background: #ff8bb6; border-color: #ff8bb6; }
         .mode-btn.normal-mode-highlight { border-color: #ffca28; color: #ffca28; }
         .mode-btn.normal-mode-highlight.active { background: #ffca28; color: #131017; border-color: #ffca28; }
         
-        /* Highlight Non-Normal Modifiers Green */
         .mode-btn.custom-modifier-highlight { border-color: #4caf50; color: #4caf50; }
         .mode-btn.custom-modifier-highlight.active { background: #4caf50; color: #ffffff; border-color: #4caf50; }
         
-        .time-btn.active { background: #ffca28; border-color: #ffca28; color: #131017; }
+        /* Time-Specific Colors When Active */
+        .time-btn.active-10 { background: #f44336 !important; border-color: #f44336 !important; color: #fff !important; }
+        .time-btn.active-20 { background: #ffca28 !important; border-color: #ffca28 !important; color: #131017 !important; }
+        .time-btn.active-30 { background: #4caf50 !important; border-color: #4caf50 !important; color: #fff !important; }
 
         .input-style {
             width: 100%;
@@ -197,7 +209,7 @@
             grid-template-columns: repeat(8, 1fr);
             background: #131017;
             border: 2px solid #3d2f44;
-            max-width: 80%; /* Made 20% smaller */
+            max-width: 80%;
             aspect-ratio: 1 / 1;
             margin: 0 auto;
             border-radius: 6px;
@@ -208,7 +220,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 20px; /* Adjusted text slightly down to match new grid boundary */
+            font-size: 20px;
             cursor: pointer;
             user-select: none;
             position: relative;
@@ -237,7 +249,6 @@
             position: absolute;
         }
         
-        /* Orange Check Outlining and Red Checkmate Highlights */
         .chess-square.check-king-highlight {
             box-shadow: inset 0 0 0 3px #ff9800 !important;
             border: 1px solid #ff9800 !important;
@@ -257,7 +268,7 @@
             display: flex;
             gap: 6px;
             margin-top: 8px;
-            max-width: 80%; /* Kept container controls scaled tightly to matches board */
+            max-width: 80%;
             margin-left: auto;
             margin-right: auto;
         }
@@ -285,8 +296,14 @@
         }
         .react-btn:active { transform: scale(1.2); }
 
+        /* Chat Container with Subtle Gaming Vectors/Diagram Overlay Background */
         .chat-box {
             background: #131017;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 0), 
+                              linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 8px 8px, 24px 24px, 24px 24px;
+            position: relative;
             flex-grow: 1;
             height: 70px;
             overflow-y: auto;
@@ -298,6 +315,24 @@
             border: 1px solid #3d2f44;
         }
         
+        /* Transparent Gaming Emblem Details Overlaying Chat Wall */
+        .chat-box::before {
+            content: "🎮 ⚡ 🕹️ 🧩 ⚔️ ☖ ⛃ 📊 ⚙️ ❮/❯";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 13px;
+            letter-spacing: 12px;
+            width: 90%;
+            text-align: center;
+            opacity: 0.04;
+            color: #fff;
+            pointer-events: none;
+            word-wrap: break-word;
+            line-height: 2;
+        }
+        
         .bubble {
             max-width: 80%;
             padding: 6px 12px;
@@ -305,6 +340,7 @@
             font-size: 13px;
             word-break: break-word;
             line-height: 1.4;
+            z-index: 1;
         }
         
         .bubble.me { background: #ff8bb6; color: #fff; align-self: flex-end; border-bottom-right-radius: 2px; }
@@ -328,6 +364,7 @@
     <div class="container">
         <div id="lobbyScreen" class="screen-content">
             <h1>Mind Meld</h1>
+            <div class="special-dedication">FORR YOUUU ZANNN</div>
             <p style="color: #bfaec4; font-size: 14px;">Sync thoughts with another player. Choose a dynamic gamemode and match your minds!</p>
             <button id="findBtn">Find Opponent</button>
             <p id="loadingText" class="hidden" style="color: #ff8bb6; font-weight: bold;">Searching for a partner...</p>
@@ -415,7 +452,6 @@
         const db = getDatabase(app);
 
         const THEMES = ["Places", "Objects", "Animals", "Food", "Movies", "Superheroes", "Games", "Colors", "Jobs", "Brands"];
-        // Completely removed "Lightning" mode item option from global loop
         const MODES = ["Classic", "Mystery", "Connect 4", "Normal Connect 4", "Chess", "Normal Chess"];
         const TIMES = [10, 20, 30];
 
@@ -549,7 +585,9 @@
 
             TIMES.forEach(tm => {
                 const b = document.createElement("button"); b.className = "time-btn";
-                if (timeVotesData && timeVotesData[playerRole] === tm) b.classList.add("active");
+                if (timeVotesData && timeVotesData[playerRole] === tm) {
+                    b.classList.add(`active-${tm}`);
+                }
                 b.innerText = tmCounts[tm] > 0 ? `${tm}s (${tmCounts[tm]})` : `${tm}s`;
                 b.onclick = () => set(ref(db, `matches/${matchId}/timeVotes/${playerRole}`), tm);
                 timesGrid.appendChild(b);
@@ -851,8 +889,10 @@
                     }
 
                     if (data.modeVotes?.p1 && data.modeVotes?.p2) {
-                        let chosenMode = data.modeVotes.p1 === data.modeVotes.p2 ? data.modeVotes.p1 : (Math.random() > 0.5 ? data.modeVotes.p1 : data.modeVotes.p2);
-                        if (chosenMode.startsWith("Normal ")) {
+                        let chosenMode = data.modeVotes.p1 === data.modeVotes.p2 ? data.modeVotes.p1 : null;
+                        
+                        // Consolidated validation: ensure both users have filled valid parameters before resolving
+                        if (chosenMode && chosenMode.startsWith("Normal ")) {
                             if (playerRole === "p1") {
                                 if (chosenMode === "Normal Connect 4") {
                                     update(ref(db, `matches/${matchId}`), { currentMode: chosenMode, state: "c4play", votes: null, modeVotes: null, timeVotes: null, c4Board: Array(42).fill("empty"), c4Turn: "p1", lastSyncResult: "" });
@@ -863,6 +903,8 @@
                             return;
                         } else if (data.votes?.p1 && data.votes?.p2 && data.timeVotes?.p1 && data.timeVotes?.p2) {
                             if (playerRole === "p1") {
+                                // If they didn't pick the same mode, flip a coin
+                                if (!chosenMode) chosenMode = Math.random() > 0.5 ? data.modeVotes.p1 : data.modeVotes.p2;
                                 let chosenTheme = data.votes.p1 === data.votes.p2 ? data.votes.p1 : (Math.random() > 0.5 ? data.votes.p1 : data.votes.p2);
                                 let chosenTime = data.timeVotes.p1 === data.timeVotes.p2 ? data.timeVotes.p1 : (Math.random() > 0.5 ? data.timeVotes.p1 : data.timeVotes.p2);
                                 update(ref(db, `matches/${matchId}`), { currentTheme: chosenTheme, currentMode: chosenMode, customDuration: chosenTime, state: "waiting", votes: null, modeVotes: null, timeVotes: null, lastSyncResult: "" });
@@ -881,7 +923,7 @@
                     const myReadyStatus = data[`${playerRole}Ready`]; readyBtn.disabled = myReadyStatus;
                     statusMsg.innerText = myReadyStatus ? "Waiting for partner..." : `Ready up! Timer set to: ${activeDuration}s`;
                     if (data.lastSyncResult) resultAlert.innerHTML = data.lastSyncResult; else resultAlert.innerText = "⏳ Awaiting matching confirmations.";
-                    if (data.p1Ready && data.p2Ready && playerRole === "p1") runSyncTimer(activeDuration); // Lightning fallback check safely purged
+                    if (data.p1Ready && data.p2Ready && playerRole === "p1") runSyncTimer(activeDuration);
                 }
                 if (data.state === "typing") {
                     votingArea.classList.add("hidden"); readyArea.classList.add("hidden"); typingArea.classList.remove("hidden"); timerContainer.classList.remove("hidden"); c4Area.classList.add("hidden"); chessArea.classList.add("hidden");
@@ -987,7 +1029,7 @@
                             if (nextMovesCount <= 0) {
                                 update(ref(db, `matches/${matchId}`), { state: "waiting", chessMovesLeft: 0, p1Ready: false, p2Ready: false, answers: null, currentTheme: THEMES[Math.floor(Math.random() * THEMES.length)] });
                             } else {
-                                update(ref(db, `matches/${matchId}`), { state: "chessplay", chessMovesLeft: nextMovesCount });
+                                update(ref(db, `matches/${matchId}/`), { state: "chessplay", chessMovesLeft: nextMovesCount });
                             }
                             window.chessDelayTimeout = null;
                         }, 300);
@@ -1033,7 +1075,6 @@
             });
         }
 
-        // Action Handlers
         chessUndoBtn.onclick = () => { update(ref(db, `matches/${matchId}`), { undoRequested: playerRole }); };
         chessGrantUndoBtn.onclick = () => {
             onValue(ref(db, `matches/${matchId}`), (snap) => {
