@@ -17,7 +17,7 @@
             background: #1a191f;
             color: #e1e1e6;
             display: flex;
-            justify(content: center);
+            justify-content: center;
             align-items: center;
             min-height: 100vh;
             min-height: 100dvh;
@@ -28,8 +28,8 @@
         .container {
             width: 100%;
             max-width: 420px;
-            height: 90vh;
-            height: 85dvh;
+            height: 92vh;
+            height: 88dvh;
             background: #2d2233;
             padding: 16px;
             border-radius: 16px;
@@ -37,7 +37,7 @@
             text-align: center;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
             justify-content: space-between;
             border: 1px solid #42334a;
         }
@@ -45,7 +45,7 @@
         .screen-content {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
             flex-grow: 1;
             justify-content: center;
         }
@@ -58,9 +58,9 @@
             background: #ff8bb6;
             color: #fff;
             border: none;
-            padding: 14px;
+            padding: 12px;
             border-radius: 10px;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: bold;
             cursor: pointer;
             width: 100%;
@@ -68,6 +68,20 @@
         }
         button:active { transform: scale(0.98); }
         button:disabled { background: #423845; color: #756a7a; cursor: not-allowed; transform: none; }
+
+        .meta-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #131017;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            border: 1px solid #3d2f44;
+        }
+        .streak-badge { color: #ff4a7d; display: flex; align-items: center; gap: 4px; }
+        .mode-badge { color: #00adb5; text-transform: uppercase; }
 
         .alert-banner {
             background: #1f1824;
@@ -81,44 +95,73 @@
         #themeText { color: #00adb5; }
         #timerText { color: #ff4a4a; margin-left: 6px; font-size: 16px; font-weight: bold; }
 
-        .theme-box {
+        .section-title {
+            font-size: 12px;
+            color: #bfaec4;
+            text-align: left;
+            padding-left: 2px;
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .grid-box {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-            margin-top: 6px;
-            max-height: 120px;
+            gap: 6px;
+            margin-top: 2px;
+            max-height: 95px;
             overflow-y: auto;
         }
-        .theme-btn {
+        .theme-btn, .mode-btn {
             background: #1f1824;
             color: #bfaec4;
-            padding: 12px;
-            font-size: 13px;
+            padding: 10px;
+            font-size: 12px;
             border: 1px solid #3d2f44;
             border-radius: 8px;
             cursor: pointer;
             text-align: center;
             font-weight: 500;
         }
-        .theme-btn.active { background: #00adb5; color: #fff; border-color: #00adb5; }
+        .theme-btn.active, .mode-btn.active { background: #00adb5; color: #fff; border-color: #00adb5; }
+        .mode-btn.active { background: #ff8bb6; border-color: #ff8bb6; }
 
         .input-style {
             width: 100%;
-            padding: 14px;
+            padding: 12px;
             background: #131017;
             border: 2px solid #3d2f44;
             color: #fff;
             border-radius: 10px;
-            font-size: 16px;
+            font-size: 15px;
             text-align: center;
             outline: none;
         }
         .input-style:focus { border-color: #ff8bb6; }
 
+        /* Reactions Deck */
+        .reaction-deck {
+            display: flex;
+            justify-content: space-between;
+            gap: 4px;
+            background: #1f1824;
+            padding: 4px;
+            border-radius: 8px;
+            border: 1px solid #3d2f44;
+        }
+        .react-btn {
+            background: transparent;
+            padding: 6px;
+            font-size: 18px;
+            width: auto;
+        }
+        .react-btn:active { transform: scale(1.2); }
+
         .chat-box {
             background: #131017;
             flex-grow: 1;
-            height: 120px;
+            height: 90px;
             overflow-y: auto;
             border-radius: 10px;
             padding: 10px;
@@ -130,27 +173,15 @@
         
         .bubble {
             max-width: 80%;
-            padding: 8px 12px;
+            padding: 6px 12px;
             border-radius: 14px;
             font-size: 13px;
             word-break: break-word;
             line-height: 1.4;
         }
         
-        .bubble.me {
-            background: #ff8bb6;
-            color: #fff;
-            align-self: flex-end;
-            border-bottom-right-radius: 2px;
-        }
-        
-        .bubble.them {
-            background: #00adb5;
-            color: #fff;
-            align-self: flex-start;
-            border-bottom-left-radius: 2px;
-        }
-
+        .bubble.me { background: #ff8bb6; color: #fff; align-self: flex-end; border-bottom-right-radius: 2px; }
+        .bubble.them { background: #00adb5; color: #fff; align-self: flex-start; border-bottom-left-radius: 2px; }
         .bubble.sys {
             background: rgba(0, 173, 181, 0.1);
             color: #00adb5;
@@ -161,6 +192,12 @@
             text-align: center;
             max-width: 95%;
         }
+        .bubble.react {
+            background: transparent;
+            font-size: 22px;
+            padding: 0;
+            border-radius: 0;
+        }
 
         .chat-input-container { display: flex; gap: 6px; width: 100%; }
     </style>
@@ -170,20 +207,28 @@
     <div class="container">
         <div id="lobbyScreen" class="screen-content">
             <h1>Mind Meld</h1>
-            <p style="color: #bfaec4; font-size: 15px;">Sync thoughts with another player. Type the exact same word to win.</p>
+            <p style="color: #bfaec4; font-size: 14px;">Sync thoughts with another player. Choose a dynamic gamemode and match your minds!</p>
             <button id="findBtn">Find Opponent</button>
             <p id="loadingText" class="hidden" style="color: #ff8bb6; font-weight: bold;">Searching for a partner...</p>
         </div>
 
         <div id="gameScreen" class="screen-content hidden">
+            <div class="meta-header">
+                <span class="mode-badge" id="modeBadge">Classic</span>
+                <span class="streak-badge" id="streakBadge">🔥 Streak: 0</span>
+            </div>
+
             <div class="alert-banner">
                 <div>Theme: <span id="themeText">---</span><span id="timerContainer" class="hidden"> | Time: <span id="timerText">30</span></span></div>
                 <div id="resultAlert">Waiting for connection...</div>
             </div>
 
             <div id="votingArea" class="hidden">
-                <p style="font-size: 13px; color: #bfaec4; text-align: left; padding-left: 2px;">Vote for a theme:</p>
-                <div class="theme-box" id="themesGrid"></div>
+                <p class="section-title">1. Vote Modifiers:</p>
+                <div class="grid-box" id="modesGrid"></div>
+                
+                <p class="section-title" style="margin-top: 6px;">2. Vote Category Theme:</p>
+                <div class="grid-box" id="themesGrid"></div>
             </div>
 
             <div id="readyArea" class="hidden">
@@ -193,6 +238,14 @@
 
             <div id="typingArea" class="hidden">
                 <input type="text" id="wordInput" class="input-style" placeholder="Type your guess here..." autocomplete="off" autocapitalize="off">
+            </div>
+
+            <div class="reaction-deck">
+                <button class="react-btn" data-emoji="😂">😂</button>
+                <button class="react-btn" data-emoji="🤔">🤔</button>
+                <button class="react-btn" data-emoji="🔥">🔥</button>
+                <button class="react-btn" data-emoji="💀">💀</button>
+                <button class="react-btn" data-emoji="👑">👑</button>
             </div>
 
             <div class="chat-box" id="chatBox"></div>
@@ -221,6 +274,8 @@
         const db = getDatabase(app);
 
         const THEMES = ["Places", "Objects", "Animals", "Food", "Movies", "Superheroes", "Games", "Colors", "Jobs", "Brands"];
+        const MODES = ["Classic", "Lightning", "Mystery"];
+        
         let playerId = localStorage.getItem("mm_pid") || "p_" + Math.random().toString(36).substr(2, 9);
         localStorage.setItem("mm_pid", playerId);
 
@@ -236,6 +291,7 @@
         const timerText = document.getElementById("timerText");
         const resultAlert = document.getElementById("resultAlert");
         const themesGrid = document.getElementById("themesGrid");
+        const modesGrid = document.getElementById("modesGrid");
         const readyArea = document.getElementById("readyArea");
         const readyBtn = document.getElementById("readyBtn");
         const statusMsg = document.getElementById("statusMsg");
@@ -245,6 +301,8 @@
         const chatBox = document.getElementById("chatBox");
         const chatInput = document.getElementById("chatInput");
         const sendChatBtn = document.getElementById("sendChatBtn");
+        const streakBadge = document.getElementById("streakBadge");
+        const modeBadge = document.getElementById("modeBadge");
 
         const connectedRef = ref(db, ".info/connected");
         onValue(connectedRef, (snap) => {
@@ -275,7 +333,8 @@
                         set(ref(db, `matches/${matchId}`), {
                             p1: opponent, p2: playerId,
                             currentTheme: THEMES[Math.floor(Math.random() * THEMES.length)],
-                            state: "voting", p1Ready: false, p2Ready: false
+                            currentMode: "Classic",
+                            state: "voting", p1Ready: false, p2Ready: false, streak: 0
                         }).then(() => initMatch());
                     }
                 } else {
@@ -303,23 +362,37 @@
             });
         }
 
-        function renderThemeButtons(votesData) {
+        function renderVoteInterfaces(votesData, modeVotesData) {
             themesGrid.innerHTML = "";
-            const counts = {};
-            THEMES.forEach(t => counts[t] = 0);
+            modesGrid.innerHTML = "";
+            
+            const tCounts = {}; THEMES.forEach(t => tCounts[t] = 0);
+            const mCounts = {}; MODES.forEach(m => mCounts[m] = 0);
+
             if (votesData) {
-                if (votesData.p1) counts[votesData.p1]++;
-                if (votesData.p2) counts[votesData.p2]++;
+                if (votesData.p1) tCounts[votesData.p1]++;
+                if (votesData.p2) tCounts[votesData.p2]++;
             }
+            if (modeVotesData) {
+                if (modeVotesData.p1) mCounts[modeVotesData.p1]++;
+                if (modeVotesData.p2) mCounts[modeVotesData.p2]++;
+            }
+
+            MODES.forEach(m => {
+                const b = document.createElement("button");
+                b.className = "mode-btn";
+                if (modeVotesData && modeVotesData[playerRole] === m) b.classList.add("active");
+                b.innerText = mCounts[m] > 0 ? `${m} (${mCounts[m]})` : m;
+                b.onclick = () => set(ref(db, `matches/${matchId}/modeVotes/${playerRole}`), m);
+                modesGrid.appendChild(b);
+            });
 
             THEMES.forEach(t => {
                 const b = document.createElement("button");
                 b.className = "theme-btn";
                 if (votesData && votesData[playerRole] === t) b.classList.add("active");
-                b.innerText = counts[t] > 0 ? `${t} (${counts[t]})` : t;
-                b.onclick = () => {
-                    set(ref(db, `matches/${matchId}/votes/${playerRole}`), t);
-                };
+                b.innerText = tCounts[t] > 0 ? `${t} (${tCounts[t]})` : t;
+                b.onclick = () => set(ref(db, `matches/${matchId}/votes/${playerRole}`), t);
                 themesGrid.appendChild(b);
             });
         }
@@ -330,7 +403,7 @@
 
             lobbyScreen.classList.add("hidden");
             gameScreen.classList.remove("hidden");
-            renderThemeButtons(null);
+            renderVoteInterfaces(null, null);
 
             currentMatchListener = onValue(ref(db, `matches/${matchId}`), (snap) => {
                 const data = snap.val();
@@ -339,27 +412,39 @@
                     return;
                 }
 
-                themeText.innerText = data.currentTheme;
-                renderThemeButtons(data.votes);
+                // Global Stats Display update
+                const currentStreak = data.streak || 0;
+                const activeMode = data.currentMode || "Classic";
+                streakBadge.innerText = `🔥 Streak: ${currentStreak}`;
+                modeBadge.innerText = activeMode;
 
+                if (activeMode === "Mystery" && data.state === "typing") {
+                    themeText.innerText = "❓ MYSTERY (No Clues!)";
+                } else {
+                    themeText.innerText = data.currentTheme;
+                }
+
+                renderVoteInterfaces(data.votes, data.modeVotes);
+
+                // Round processing
                 if (data.answers?.p1 && data.answers?.p2) {
                     clearInterval(timerInterval);
                     if (data.answers.p1 === data.answers.p2 && data.answers.p1 !== "[nothing]") {
                         resultAlert.innerHTML = `🎉 MIND SYNCED! Both typed: <span style="color:#ff8bb6;">"${data.answers.p1.toUpperCase()}"</span>!`;
                         if (playerRole === "p1" && data.state !== "resetting") {
-                            update(ref(db, `matches/${matchId}`), { state: "resetting" });
+                            update(ref(db, `matches/${matchId}`), { state: "resetting", streak: currentStreak + 1 });
                             setTimeout(() => {
                                 update(ref(db, `matches/${matchId}`), { 
                                     state: "voting", 
                                     currentTheme: THEMES[Math.floor(Math.random() * THEMES.length)], 
-                                    p1Ready: false, p2Ready: false, answers: null, votes: null
+                                    p1Ready: false, p2Ready: false, answers: null, votes: null, modeVotes: null
                                 });
                             }, 4000);
                         }
                     } else {
                         resultAlert.innerHTML = `❌ Miss! P1: "${data.answers.p1}" | P2: "${data.answers.p2}". Retrying...`;
                         if (playerRole === "p1" && data.state !== "resetting") {
-                            update(ref(db, `matches/${matchId}`), { state: "resetting" });
+                            update(ref(db, `matches/${matchId}`), { state: "resetting", streak: 0 });
                             setTimeout(() => {
                                 update(ref(db, `matches/${matchId}`), { 
                                     state: "waiting", 
@@ -375,16 +460,18 @@
                     hasSubmitted = false;
                 }
 
-                if (data.votes?.p1 && data.votes?.p2 && data.state === "voting") {
+                // Evaluate Votes Sync
+                if (data.votes?.p1 && data.votes?.p2 && data.modeVotes?.p1 && data.modeVotes?.p2 && data.state === "voting") {
                     if (playerRole === "p1") {
                         let chosenTheme = data.votes.p1 === data.votes.p2 ? data.votes.p1 : (Math.random() > 0.5 ? data.votes.p1 : data.votes.p2);
-                        update(ref(db, `matches/${matchId}`), { currentTheme: chosenTheme, state: "waiting", votes: null });
+                        let chosenMode = data.modeVotes.p1 === data.modeVotes.p2 ? data.modeVotes.p1 : (Math.random() > 0.5 ? data.modeVotes.p1 : data.modeVotes.p2);
+                        update(ref(db, `matches/${matchId}`), { currentTheme: chosenTheme, currentMode: chosenMode, state: "waiting", votes: null, modeVotes: null });
                     }
                     return;
                 }
 
                 if (data.state === "voting") {
-                    resultAlert.innerText = "🗳️ Choose a theme below!";
+                    resultAlert.innerText = "🗳️ Vote for configuration options!";
                     votingArea.classList.remove("hidden");
                     readyArea.classList.add("hidden");
                     typingArea.classList.add("hidden");
@@ -400,11 +487,14 @@
 
                     const myReadyStatus = data[`${playerRole}Ready`];
                     readyBtn.disabled = myReadyStatus;
-                    statusMsg.innerText = myReadyStatus ? "Waiting for partner..." : "Theme set! Ready up to match words!";
-                    resultAlert.innerText = "⏳ Awaiting ready confirmations.";
+                    statusMsg.innerText = myReadyStatus ? "Waiting for partner..." : `Ready up for ${activeMode} Mode!`;
+                    resultAlert.innerText = "⏳ Awaiting matching confirmations.";
 
                     if (data.p1Ready && data.p2Ready) {
-                        if (playerRole === "p1") runSyncTimer();
+                        if (playerRole === "p1") {
+                            let duration = activeMode === "Lightning" ? 10 : 30;
+                            runSyncTimer(duration);
+                        }
                     }
                 }
 
@@ -422,15 +512,21 @@
                 }
             });
 
+            // Chat & Reactions Monitor
             onValue(ref(db, `matches/${matchId}/chat`), (snap) => {
                 chatBox.innerHTML = "";
                 const messages = snap.val();
                 if (messages) {
                     Object.values(messages).forEach(m => {
-                        const bubbleClass = m.sys ? "sys" : (m.uid === playerId ? "me" : "them");
+                        const isEmote = m.msg.startsWith("[react]");
+                        const cleanMsg = isEmote ? m.msg.replace("[react]", "") : m.msg;
+                        
+                        let bubbleClass = m.sys ? "sys" : (m.uid === playerId ? "me" : "them");
+                        if(isEmote) bubbleClass += " react";
+
                         const msgDiv = document.createElement("div");
                         msgDiv.className = `bubble ${bubbleClass}`;
-                        msgDiv.innerText = m.msg;
+                        msgDiv.innerText = cleanMsg;
                         chatBox.appendChild(msgDiv);
                     });
                     chatBox.scrollTop = chatBox.scrollHeight;
@@ -443,8 +539,8 @@
             update(ref(db, `matches/${matchId}`), upd);
         };
 
-        function runSyncTimer() {
-            let count = 30;
+        function runSyncTimer(duration) {
+            let count = duration;
             update(ref(db, `matches/${matchId}`), { state: "typing", timer: count });
             timerInterval = setInterval(() => {
                 count--;
@@ -472,6 +568,14 @@
             setTimeout(() => location.reload(), 2000);
         }
 
+        // Setup Reaction buttons
+        document.querySelectorAll(".react-btn").forEach(btn => {
+            btn.onclick = () => {
+                const emo = btn.getAttribute("data-emoji");
+                push(ref(db, `matches/${matchId}/chat`), { uid: playerId, msg: `[react]${emo}`, sys: false });
+            };
+        });
+
         sendChatBtn.onclick = postChat;
         chatInput.onkeypress = (e) => { if (e.key === "Enter") postChat(); };
         function postChat() {
@@ -479,7 +583,6 @@
             if(!m) return;
             push(ref(db, `matches/${matchId}/chat`), { uid: playerId, msg: m, sys: false });
             chatInput.value = "";
-            // chatInput.blur(); // Removed so focus stays on the field and keyboard remains open
         }
     </script>
 </body>
