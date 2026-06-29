@@ -131,6 +131,11 @@
         .mode-btn.active { background: #ff8bb6; border-color: #ff8bb6; }
         .mode-btn.normal-mode-highlight { border-color: #ffca28; color: #ffca28; }
         .mode-btn.normal-mode-highlight.active { background: #ffca28; color: #131017; border-color: #ffca28; }
+        
+        /* Highlight Non-Normal Modifiers Green */
+        .mode-btn.custom-modifier-highlight { border-color: #4caf50; color: #4caf50; }
+        .mode-btn.custom-modifier-highlight.active { background: #4caf50; color: #ffffff; border-color: #4caf50; }
+        
         .time-btn.active { background: #ffca28; border-color: #ffca28; color: #131017; }
 
         .input-style {
@@ -162,7 +167,7 @@
             background: #241b2e;
             padding: 8px;
             border-radius: 10px;
-            max-width: 270px;
+            max-width: 100%;
             margin: 0 auto;
             overflow: hidden;
         }
@@ -179,19 +184,21 @@
         .c4-slot.empty:active { transform: scale(0.9); }
         .c4-slot.winning-highlight { background: #ffca28 !important; box-shadow: 0 0 14px #ffca28 !important; border-color: #fff !important; }
 
-        /* Chess Board Styles */
+        /* Chess Board Styles with Perfect Mobile Box Scaling Boundaries */
         #chessArea {
             background: #1a1520;
             padding: 8px;
             border-radius: 12px;
             border: 1px solid #42334a;
+            max-width: 100%;
         }
         .chess-grid {
             display: grid;
             grid-template-columns: repeat(8, 1fr);
             background: #131017;
             border: 2px solid #3d2f44;
-            max-width: 280px;
+            max-width: 100%;
+            aspect-ratio: 1 / 1;
             margin: 0 auto;
             border-radius: 6px;
             overflow: hidden;
@@ -208,11 +215,9 @@
             font-weight: bold;
         }
         
-        /* Greyish Blue and White Aesthetic Themes */
         .chess-square.light { background: #eceff4; color: #4a5a70; }
         .chess-square.dark { background: #4a5a70; color: #eceff4; }
         
-        /* True Visual Contrast Pieces Rendering */
         .chess-piece-white {
             color: #ffffff !important;
             text-shadow: 1px 1px 0px #000, -1px -1px 0px #000, 1px -1px 0px #000, -1px 1px 0px #000, 0px 1px 0px #000, 0px -1px 0px #000, 1px 0px 0px #000, -1px 0px 0px #000;
@@ -231,11 +236,28 @@
             border-radius: 50%;
             position: absolute;
         }
+        
+        /* Orange Check Outlining and Red Checkmate Highlights */
+        .chess-square.check-king-highlight {
+            box-shadow: inset 0 0 0 4px #ff9800 !important;
+            border: 2px solid #ff9800 !important;
+            z-index: 5;
+        }
+        .chess-square.losing-king-highlight {
+            background: #f44336 !important;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.5) !important;
+            animation: pulse-red-king 1.5s infinite alternate;
+        }
+        @keyframes pulse-red-king {
+            0% { background: #d32f2f !important; }
+            100% { background: #ff5252 !important; }
+        }
+
         .chess-controls {
             display: flex;
             gap: 6px;
             margin-top: 8px;
-            max-width: 280px;
+            max-width: 100%;
             margin-left: auto;
             margin-right: auto;
         }
@@ -513,7 +535,12 @@
             MODES.forEach(m => {
                 const b = document.createElement("button");
                 b.className = "mode-btn";
-                if (m.startsWith("Normal ")) b.classList.add("normal-mode-highlight");
+                // Color Modifiers Logic
+                if (m.startsWith("Normal ")) {
+                    b.classList.add("normal-mode-highlight");
+                } else {
+                    b.classList.add("custom-modifier-highlight");
+                }
                 if (modeVotesData && modeVotesData[playerRole] === m) b.classList.add("active");
                 b.innerText = mCounts[m] > 0 ? `${m} (${mCounts[m]})` : m;
                 b.onclick = () => set(ref(db, `matches/${matchId}/modeVotes/${playerRole}`), m);
@@ -644,16 +671,22 @@
             return true;
         }
 
-        function renderChessBoard(boardArray, interactive) {
+        function renderChessBoard(boardArray, interactive, currentMatchData = {}) {
             chessBoardDisplay.innerHTML = "";
             
-            // Build absolute board coordinate mapping array depending on side view configurations
             const renderingIndices = [];
             if (playerRole === "p2") {
                 for (let i = 63; i >= 0; i--) renderingIndices.push(i);
             } else {
                 for (let i = 0; i < 64; i++) renderingIndices.push(i);
             }
+
+            // Find King index tracking positions for highlighters
+            const whiteKingIdx = findKing(boardArray, "white");
+            const blackKingIdx = findKing(boardArray, "black");
+            
+            let isWInCheck = isKingInCheck(boardArray, "white");
+            let isBInCheck = isKingInCheck(boardArray, "black");
 
             renderingIndices.forEach((i) => {
                 const cell = boardArray[i];
@@ -669,6 +702,17 @@
                     sq.appendChild(pieceSpan);
                 }
                 
+                // Orange borders on check states
+                if (i === whiteKingIdx && isWInCheck) sq.classList.add("check-king-highlight");
+                if (i === blackKingIdx && isBInCheck) sq.classList.add("check-king-highlight");
+
+                // Red backgrounds on losing checkmated kings
+                if (currentMatchData.state === "chesswin" && currentMatchData.endType !== "resign") {
+                    let loserRole = currentMatchData.chessWinner === "p1" ? "p2" : "p1";
+                    if (loserRole === "p1" && i === whiteKingIdx) sq.classList.add("losing-king-highlight");
+                    if (loserRole === "p2" && i === blackKingIdx) sq.classList.add("losing-king-highlight");
+                }
+
                 if (selectedSquare === i) sq.classList.add("selected");
                 if (validDestinations.includes(i)) sq.classList.add("valid-dest");
 
@@ -689,7 +733,7 @@
                             let opponentColor = isWhiteTurn ? "black" : "white";
                             
                             if (checkMatedStatus(nextBoard, opponentColor)) {
-                                update(ref(db, `matches/${matchId}`), { chessBoard: nextBoard, state: "chesswin", chessWinner: playerRole });
+                                update(ref(db, `matches/${matchId}`), { chessBoard: nextBoard, state: "chesswin", chessWinner: playerRole, endType: "checkmate" });
                             } else {
                                 update(ref(db, `matches/${matchId}`), {
                                     chessBoard: nextBoard, chessTurn: nextTurn, state: "chessvisualdelay",
@@ -699,7 +743,7 @@
                         } else {
                             if ((isWhiteTurn && isWhitePiece(cell)) || (!isWhiteTurn && isBlackPiece(cell))) {
                                 selectedSquare = i; validDestinations = generateValidMoves(i, boardArray);
-                                renderChessBoard(boardArray, true);
+                                renderChessBoard(boardArray, true, currentMatchData);
                             }
                         }
                     };
@@ -882,7 +926,7 @@
                     renderC4Board(data.c4Board, false, data.winningCells || []);
                     resultAlert.innerText = data.c4Winner === playerRole ? "🎉 CONNECT 4 VICTORY! YOU WIN!" : "💀 MATCH OVER! OPPONENT WON!";
                     if (!window.c4CountdownInterval) {
-                        let winCountdownLeft = 5.0;
+                        let winCountdownLeft = 7.8;
                         window.c4CountdownInterval = setInterval(() => {
                             winCountdownLeft -= 0.1;
                             if (winCountdownLeft <= 0) { clearInterval(window.c4CountdownInterval); window.c4CountdownInterval = null; }
@@ -893,7 +937,7 @@
                         window.c4DelayTimeout = setTimeout(() => {
                             update(ref(db, `matches/${matchId}`), { state: "voting", currentTheme: THEMES[Math.floor(Math.random() * THEMES.length)], p1Ready: false, p2Ready: false, answers: null, votes: null, modeVotes: null, timeVotes: null, c4Board: Array(42).fill("empty"), c4Turn: "p1", streak: 0, lastSyncResult: "", winningCells: null, c4Winner: null });
                             window.c4DelayTimeout = null;
-                        }, 5000);
+                        }, 7800);
                     }
                 }
 
@@ -918,7 +962,6 @@
                         resultAlert.innerText = data.lastSyncResult;
                     }
 
-                    // Handle Undo visibility mechanics
                     if (data.undoRequested && data.undoRequested !== playerRole) {
                         chessGrantUndoBtn.classList.remove("hidden");
                         chessUndoBtn.classList.add("hidden");
@@ -929,11 +972,11 @@
                         chessUndoBtn.innerText = data.undoRequested === playerRole ? "Awaiting Choice..." : "Request Undo";
                     }
 
-                    renderChessBoard(data.chessBoard, isMyTurn);
+                    renderChessBoard(data.chessBoard, isMyTurn, data);
                 }
                 if (data.state === "chessvisualdelay") {
                     votingArea.classList.add("hidden"); readyArea.classList.add("hidden"); typingArea.classList.add("hidden"); timerContainer.classList.add("hidden"); c4Area.classList.add("hidden"); chessArea.classList.remove("hidden");
-                    renderChessBoard(data.chessBoard, false);
+                    renderChessBoard(data.chessBoard, false, data);
 
                     if (!window.chessCountdownInterval) {
                         let localChessTime = 0.3;
@@ -958,11 +1001,17 @@
                 }
                 if (data.state === "chesswin") {
                     votingArea.classList.add("hidden"); readyArea.classList.add("hidden"); typingArea.classList.add("hidden"); timerContainer.classList.add("hidden"); c4Area.classList.add("hidden"); chessArea.classList.remove("hidden");
-                    renderChessBoard(data.chessBoard, false);
+                    renderChessBoard(data.chessBoard, false, data);
                     
-                    resultAlert.innerText = data.chessWinner === playerRole ? "🎉 CHESS CHECKMATE VICTORY! YOU WIN!" : "💀 CHECKMATE! YOU LOSE!";
+                    // Show clean labels separating resign vs checkmate win types
+                    if (data.endType === "resign") {
+                        resultAlert.innerText = data.chessWinner === playerRole ? "🏳️ OPPONENT RESIGNED! YOU WIN!" : "🏳️ YOU RESIGNED! MATCH OVER!";
+                    } else {
+                        resultAlert.innerText = data.chessWinner === playerRole ? "🎉 CHESS CHECKMATE VICTORY! YOU WIN!" : "💀 CHECKMATE! YOU LOSE!";
+                    }
+
                     if (!window.chessCountdownInterval) {
-                        let winChessTime = 5.0;
+                        let winChessTime = 7.8;
                         window.chessCountdownInterval = setInterval(() => {
                             winChessTime -= 0.1;
                             if (winChessTime <= 0) { clearInterval(window.chessCountdownInterval); window.chessCountdownInterval = null; }
@@ -971,9 +1020,9 @@
                     }
                     if (playerRole === "p1" && !window.chessDelayTimeout) {
                         window.chessDelayTimeout = setTimeout(() => {
-                            update(ref(db, `matches/${matchId}`), { state: "voting", currentTheme: THEMES[Math.floor(Math.random() * THEMES.length)], p1Ready: false, p2Ready: false, answers: null, votes: null, modeVotes: null, timeVotes: null, c4Board: Array(42).fill("empty"), c4Turn: "p1", chessBoard: INITIAL_CHESS, chessTurn: "p1", chessMovesLeft: 0, undoRequested: "", streak: 0, lastSyncResult: "", chessWinner: null });
+                            update(ref(db, `matches/${matchId}`), { state: "voting", currentTheme: THEMES[Math.floor(Math.random() * THEMES.length)], p1Ready: false, p2Ready: false, answers: null, votes: null, modeVotes: null, timeVotes: null, c4Board: Array(42).fill("empty"), c4Turn: "p1", chessBoard: INITIAL_CHESS, chessTurn: "p1", chessMovesLeft: 0, undoRequested: "", streak: 0, lastSyncResult: "", chessWinner: null, endType: null });
                             window.chessDelayTimeout = null;
-                        }, 5000);
+                        }, 7800);
                     }
                 }
             });
@@ -1012,8 +1061,11 @@
             }, { onlyOnce: true });
         };
         chessResignBtn.onclick = () => {
-            let opponentRole = playerRole === "p1" ? "p2" : "p1";
-            update(ref(db, `matches/${matchId}`), { state: "chesswin", chessWinner: opponentRole });
+            // Confirmation intercept modal window wrapper
+            if (confirm("Are you absolutely sure you want to resign the game?")) {
+                let opponentRole = playerRole === "p1" ? "p2" : "p1";
+                update(ref(db, `matches/${matchId}`), { state: "chesswin", chessWinner: opponentRole, endType: "resign" });
+            }
         };
 
         readyBtn.onclick = () => { const upd = {}; upd[`${playerRole}Ready`] = true; upd["lastSyncResult"] = ""; update(ref(db, `matches/${matchId}`), upd); };
