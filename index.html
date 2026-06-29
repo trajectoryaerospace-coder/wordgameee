@@ -201,19 +201,33 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 24px;
+            font-size: 26px;
             cursor: pointer;
             user-select: none;
             position: relative;
+            font-weight: bold;
         }
-        .chess-square.light { background: #e9edcc; color: #779556; }
-        .chess-square.dark { background: #779556; color: #e9edcc; }
+        
+        /* Greyish Blue and White Aesthetic Themes */
+        .chess-square.light { background: #eceff4; color: #4a5a70; }
+        .chess-square.dark { background: #4a5a70; color: #eceff4; }
+        
+        /* True Visual Contrast Pieces Rendering */
+        .chess-piece-white {
+            color: #ffffff !important;
+            text-shadow: 1px 1px 0px #000, -1px -1px 0px #000, 1px -1px 0px #000, -1px 1px 0px #000, 0px 1px 0px #000, 0px -1px 0px #000, 1px 0px 0px #000, -1px 0px 0px #000;
+        }
+        .chess-piece-black {
+            color: #151417 !important;
+            text-shadow: 0.5px 0.5px 0px #fff, -0.5px -0.5px 0px #fff, 0.5px -0.5px 0px #fff, -0.5px 0.5px 0px #fff;
+        }
+
         .chess-square.selected { background: #ffca28 !important; }
         .chess-square.valid-dest::after {
             content: "";
             width: 10px;
             height: 10px;
-            background: rgba(0, 0, 0, 0.25);
+            background: rgba(255, 74, 125, 0.6);
             border-radius: 50%;
             position: absolute;
         }
@@ -384,7 +398,7 @@
 
         const PIECES = {
             'R': '♜', 'N': '♞', 'B': '♝', 'Q': '♛', 'K': '♚', 'P': '♟',
-            'r': '♖', 'n': '♘', 'b': '♗', 'q': '♕', 'k': '♔', 'p': '♙',
+            'r': '♜', 'n': '♞', 'b': '♝', 'q': '♛', 'k': '♚', 'p': '♟',
             '.': ''
         };
         const INITIAL_CHESS = [
@@ -526,7 +540,13 @@
         function isWhitePiece(char) { return char !== '.' && char === char.toUpperCase(); }
         function isBlackPiece(char) { return char !== '.' && char === char.toLowerCase(); }
         
-        function generateValidMoves(idx, board) {
+        function findKing(board, color) {
+            const targetKing = (color === "white") ? "K" : "k";
+            for (let i = 0; i < 64; i++) { if (board[i] === targetKing) return i; }
+            return -1;
+        }
+
+        function generateRawMoves(idx, board) {
             const moves = []; const piece = board[idx]; if (piece === '.') return moves;
             const r = Math.floor(idx / 8), c = idx % 8;
             const isWhite = isWhitePiece(piece);
@@ -582,19 +602,72 @@
             return moves;
         }
 
-        function checkKingMissing(board) {
-            let whiteKing = board.includes('K'), blackKing = board.includes('k');
-            if (!whiteKing) return 'p2'; if (!blackKing) return 'p1';
-            return null;
+        function isKingInCheck(board, color) {
+            const kingIdx = findKing(board, color);
+            if (kingIdx === -1) return false; 
+            for (let i = 0; i < 64; i++) {
+                const item = board[i];
+                if (item !== '.' && ((color === "white" && isBlackPiece(item)) || (color === "black" && isWhitePiece(item)))) {
+                    const dynamicMoves = generateRawMoves(i, board);
+                    if (dynamicMoves.includes(kingIdx)) return true;
+                }
+            }
+            return false;
+        }
+
+        function generateValidMoves(idx, board) {
+            const rawMoves = generateRawMoves(idx, board);
+            const verifiedMoves = [];
+            const activePiece = board[idx];
+            const activeColor = isWhitePiece(activePiece) ? "white" : "black";
+
+            rawMoves.forEach(target => {
+                const sandboxBoard = [...board];
+                sandboxBoard[target] = activePiece;
+                sandboxBoard[idx] = '.';
+                if (!isKingInCheck(sandboxBoard, activeColor)) {
+                    verifiedMoves.push(target);
+                }
+            });
+            return verifiedMoves;
+        }
+
+        function checkMatedStatus(board, turnColor) {
+            if (!isKingInCheck(board, turnColor)) return false;
+            for (let i = 0; i < 64; i++) {
+                const piece = board[i];
+                if (piece !== '.' && ((turnColor === "white" && isWhitePiece(piece)) || (turnColor === "black" && isBlackPiece(piece)))) {
+                    const options = generateValidMoves(i, board);
+                    if (options.length > 0) return false;
+                }
+            }
+            return true;
         }
 
         function renderChessBoard(boardArray, interactive) {
             chessBoardDisplay.innerHTML = "";
-            boardArray.forEach((cell, i) => {
+            
+            // Build absolute board coordinate mapping array depending on side view configurations
+            const renderingIndices = [];
+            if (playerRole === "p2") {
+                for (let i = 63; i >= 0; i--) renderingIndices.push(i);
+            } else {
+                for (let i = 0; i < 64; i++) renderingIndices.push(i);
+            }
+
+            renderingIndices.forEach((i) => {
+                const cell = boardArray[i];
                 const sq = document.createElement("div");
                 const r = Math.floor(i / 8), c = i % 8;
+                
                 sq.className = `chess-square ${(r + c) % 2 === 0 ? 'light' : 'dark'}`;
-                sq.innerText = PIECES[cell] || '';
+                
+                if (cell !== '.') {
+                    const pieceSpan = document.createElement("span");
+                    pieceSpan.className = isWhitePiece(cell) ? "chess-piece-white" : "chess-piece-black";
+                    pieceSpan.innerText = PIECES[cell];
+                    sq.appendChild(pieceSpan);
+                }
                 
                 if (selectedSquare === i) sq.classList.add("selected");
                 if (validDestinations.includes(i)) sq.classList.add("valid-dest");
@@ -607,17 +680,17 @@
                             const nextBoard = [...boardArray];
                             nextBoard[i] = movingPiece; nextBoard[selectedSquare] = '.';
                             
-                            // Handle simple automatic Queening Promotion
                             if (movingPiece === 'P' && Math.floor(i / 8) === 0) nextBoard[i] = 'Q';
                             if (movingPiece === 'p' && Math.floor(i / 8) === 7) nextBoard[i] = 'q';
 
                             selectedSquare = null; validDestinations = [];
                             
-                            const kingWin = checkKingMissing(nextBoard);
-                            if (kingWin) {
-                                update(ref(db, `matches/${matchId}`), { chessBoard: nextBoard, state: "chesswin", chessWinner: kingWin });
+                            let nextTurn = isWhiteTurn ? "p2" : "p1";
+                            let opponentColor = isWhiteTurn ? "black" : "white";
+                            
+                            if (checkMatedStatus(nextBoard, opponentColor)) {
+                                update(ref(db, `matches/${matchId}`), { chessBoard: nextBoard, state: "chesswin", chessWinner: playerRole });
                             } else {
-                                let nextTurn = isWhiteTurn ? "p2" : "p1";
                                 update(ref(db, `matches/${matchId}`), {
                                     chessBoard: nextBoard, chessTurn: nextTurn, state: "chessvisualdelay",
                                     historyBoard: boardArray 
@@ -830,12 +903,18 @@
                     
                     const isMyTurn = data.chessTurn === playerRole;
                     const movesLeft = data.chessMovesLeft || 0;
+                    const currentTeamColor = (playerRole === "p1") ? "white" : "black";
                     
+                    let boardHeadingText = "";
+                    if (isKingInCheck(data.chessBoard, currentTeamColor)) {
+                        boardHeadingText = "⚠️ CHECK! ";
+                    }
+
                     if (activeMode === "Normal Chess") {
-                        chessStatus.innerText = isMyTurn ? "🟢 YOUR TURN! Make a chess move." : "🔴 Opponent's turn to move piece...";
+                        chessStatus.innerText = boardHeadingText + (isMyTurn ? "🟢 YOUR TURN! Make a chess move." : "🔴 Opponent's turn to move piece...");
                         resultAlert.innerText = "🎮 Mode: Normal turn-based Chess";
                     } else {
-                        chessStatus.innerText = isMyTurn ? `🟢 YOUR TURN! [${movesLeft} group match moves remaining]` : `🔴 Opponent's turn... [${movesLeft} group match moves remaining]`;
+                        chessStatus.innerText = boardHeadingText + (isMyTurn ? `🟢 YOUR TURN! [${movesLeft} group match moves remaining]` : `🔴 Opponent's turn... [${movesLeft} group match moves remaining]`);
                         resultAlert.innerText = data.lastSyncResult;
                     }
 
