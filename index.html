@@ -401,6 +401,7 @@
             });
         }
 
+        // Structural setup of options matrix setup
         function renderVoteInterfaces(votesData, modeVotesData) {
             themesGrid.innerHTML = "";
             modesGrid.innerHTML = "";
@@ -437,28 +438,28 @@
         }
 
         function checkC4Win(board) {
-            // Horizontal line trace
+            // Horizontal checking
             for (let r = 0; r < 6; r++) {
                 for (let c = 0; c < 4; c++) {
                     let i = r * 7 + c;
                     if (board[i] && board[i] !== "empty" && board[i] === board[i+1] && board[i] === board[i+2] && board[i] === board[i+3]) return board[i];
                 }
             }
-            // Vertical line trace
+            // Vertical checking
             for (let r = 0; r < 3; r++) {
                 for (let c = 0; c < 7; c++) {
                     let i = r * 7 + c;
                     if (board[i] && board[i] !== "empty" && board[i] === board[i+7] && board[i] === board[i+14] && board[i] === board[i+21]) return board[i];
                 }
             }
-            // Diagonal right-down trace
+            // Diagonal down-right checking
             for (let r = 0; r < 3; r++) {
                 for (let c = 0; c < 4; c++) {
                     let i = r * 7 + c;
                     if (board[i] && board[i] !== "empty" && board[i] === board[i+8] && board[i] === board[i+16] && board[i] === board[i+24]) return board[i];
                 }
             }
-            // Diagonal left-down trace
+            // Diagonal down-left checking
             for (let r = 0; r < 3; r++) {
                 for (let c = 3; c < 7; c++) {
                     let i = r * 7 + c;
@@ -538,14 +539,15 @@
 
                 renderVoteInterfaces(data.votes, data.modeVotes);
 
-                // Word Matching evaluations
+                // Word Matching logic block
                 if (data.answers?.p1 && data.answers?.p2) {
                     clearInterval(timerInterval);
                     if (data.answers.p1 === data.answers.p2 && data.answers.p1 !== "[nothing]") {
                         resultAlert.innerHTML = `🎉 MIND SYNCED! Both typed: <span style="color:#ff8bb6;">"${data.answers.p1.toUpperCase()}"</span>!`;
                         if (playerRole === "p1" && data.state !== "resetting" && data.state !== "c4play" && data.state !== "c4win") {
                             if (activeMode === "Connect 4") {
-                                update(ref(db, `matches/${matchId}`), { state: "c4play", streak: currentStreak + 1 });
+                                // FIXED: Clear answers here to break potential infinite state lockouts on the event triggers
+                                update(ref(db, `matches/${matchId}`), { state: "c4play", streak: currentStreak + 1, answers: null });
                             } else {
                                 update(ref(db, `matches/${matchId}`), { state: "resetting", streak: currentStreak + 1 });
                                 setTimeout(() => {
@@ -576,7 +578,7 @@
                     hasSubmitted = false;
                 }
 
-                // Configuration Sync Routing
+                // Configuration choice evaluator logic
                 if (data.votes?.p1 && data.votes?.p2 && data.modeVotes?.p1 && data.modeVotes?.p2 && data.state === "voting") {
                     if (playerRole === "p1") {
                         let chosenTheme = data.votes.p1 === data.votes.p2 ? data.votes.p1 : (Math.random() > 0.5 ? data.votes.p1 : data.votes.p2);
@@ -586,7 +588,7 @@
                     return;
                 }
 
-                // Global Workspace Structural Updates
+                // Global display management switch
                 if (data.state === "voting") {
                     resultAlert.innerText = "🗳️ Vote for configuration options!";
                     votingArea.classList.remove("hidden");
@@ -631,7 +633,7 @@
                     }
                 }
 
-                // State Machine Connect 4 Interactions
+                // Interactive Connect 4 States management
                 if (data.state === "c4play") {
                     votingArea.classList.add("hidden");
                     readyArea.classList.add("hidden");
@@ -663,7 +665,7 @@
                 }
             });
 
-            // Chat Monitoring
+            // Real-Time Chat tracking
             onValue(ref(db, `matches/${matchId}/chat`), (snap) => {
                 chatBox.innerHTML = "";
                 const messages = snap.val();
@@ -719,7 +721,7 @@
             setTimeout(() => location.reload(), 2000);
         }
 
-        // Reaction Buttons Listeners
+        // Action Deck Expressions Listeners
         document.querySelectorAll(".react-btn").forEach(btn => {
             btn.onclick = () => {
                 const emo = btn.getAttribute("data-emoji");
