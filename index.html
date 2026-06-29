@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Mind Meld</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
             -webkit-tap-highlight-color: transparent;
         }
-       
+        
         body {
             background: #1a191f;
             color: #e1e1e6;
@@ -24,6 +24,7 @@
             padding: 12px;
             overflow: hidden;
         }
+
         .container {
             width: 100%;
             max-width: 420px;
@@ -40,6 +41,7 @@
             justify-content: space-between;
             border: 1px solid #42334a;
         }
+
         .screen-content {
             display: flex;
             flex-direction: column;
@@ -47,9 +49,11 @@
             flex-grow: 1;
             justify-content: center;
         }
+
         .hidden { display: none !important; }
+
         h1 { color: #ff8bb6; font-size: 26px; letter-spacing: 0.5px; }
-       
+        
         button {
             background: #ff8bb6;
             color: #fff;
@@ -64,6 +68,7 @@
         }
         button:active { transform: scale(0.98); }
         button:disabled { background: #423845; color: #756a7a; cursor: not-allowed; transform: none; }
+
         .meta-header {
             display: flex;
             justify-content: space-between;
@@ -77,6 +82,7 @@
         }
         .streak-badge { color: #ff4a7d; display: flex; align-items: center; gap: 4px; }
         .mode-badge { color: #00adb5; text-transform: uppercase; }
+
         .alert-banner {
             background: #1f1824;
             padding: 12px;
@@ -88,6 +94,7 @@
         #resultAlert { color: #ffca28; margin-top: 4px; display: block; font-size: 13px;}
         #themeText { color: #00adb5; }
         #timerText { color: #ff4a4a; margin-left: 6px; font-size: 16px; font-weight: bold; }
+
         .section-title {
             font-size: 11px;
             color: #bfaec4;
@@ -97,12 +104,13 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
+
         .grid-box {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 4px;
             margin-top: 2px;
-            max-height: 80px;
+            max-height: 95px;
             overflow-y: auto;
         }
         .grid-box.three-cols {
@@ -121,8 +129,10 @@
         }
         .theme-btn.active, .mode-btn.active, .time-btn.active { background: #00adb5; color: #fff; border-color: #00adb5; }
         .mode-btn.active { background: #ff8bb6; border-color: #ff8bb6; }
-        .mode-btn.normal-mode.active { background: #ffca28; color: #131017; border-color: #ffca28; }
+        .mode-btn.normal-mode-highlight { border-color: #ffca28; color: #ffca28; }
+        .mode-btn.normal-mode-highlight.active { background: #ffca28; color: #131017; border-color: #ffca28; }
         .time-btn.active { background: #ffca28; border-color: #ffca28; color: #131017; }
+
         .input-style {
             width: 100%;
             padding: 12px;
@@ -134,8 +144,10 @@
             outline: none;
         }
         .input-style:focus { border-color: #ff8bb6; }
+
         #wordInput { text-align: center; }
         #chatInput { text-align: left; }
+
         /* Connect 4 Board */
         #c4Area {
             background: #1a1520;
@@ -165,58 +177,58 @@
         .c4-slot.p2 { background: #00adb5; box-shadow: 0 0 8px #00adb5; }
         .c4-slot.empty { cursor: pointer; transition: background 0.15s, transform 0.1s; }
         .c4-slot.empty:active { transform: scale(0.9); }
-       
-        /* Highlight Winning Path Combo */
-        .c4-slot.winning-highlight {
-            background: #ffca28 !important;
-            box-shadow: 0 0 14px #ffca28 !important;
-            border-color: #fff !important;
-        }
+        .c4-slot.winning-highlight { background: #ffca28 !important; box-shadow: 0 0 14px #ffca28 !important; border-color: #fff !important; }
 
-        /* Chess Board */
+        /* Chess Board Styles */
         #chessArea {
             background: #1a1520;
-            padding: 10px;
+            padding: 8px;
             border-radius: 12px;
             border: 1px solid #42334a;
         }
         .chess-grid {
             display: grid;
             grid-template-columns: repeat(8, 1fr);
-            gap: 2px;
-            background: #241b2e;
-            padding: 8px;
-            border-radius: 10px;
-            max-width: 320px;
+            background: #131017;
+            border: 2px solid #3d2f44;
+            max-width: 280px;
             margin: 0 auto;
+            border-radius: 6px;
             overflow: hidden;
         }
         .chess-square {
             aspect-ratio: 1 / 1;
             display: flex;
-            align-items: center;
             justify-content: center;
-            font-size: 28px;
+            align-items: center;
+            font-size: 24px;
             cursor: pointer;
             user-select: none;
             position: relative;
         }
-        .chess-square.light { background: #f0d9b5; }
-        .chess-square.dark { background: #b58863; }
-        .chess-square.highlight { box-shadow: inset 0 0 0 4px #ffca28; }
-        .chess-square.selected { box-shadow: inset 0 0 0 4px #00adb5; }
-        .chess-square.last-move { box-shadow: inset 0 0 0 3px #ff8bb6; }
-        .chess-piece {
-            z-index: 2;
-            transition: transform 0.2s;
+        .chess-square.light { background: #e9edcc; color: #779556; }
+        .chess-square.dark { background: #779556; color: #e9edcc; }
+        .chess-square.selected { background: #ffca28 !important; }
+        .chess-square.valid-dest::after {
+            content: "";
+            width: 10px;
+            height: 10px;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 50%;
+            position: absolute;
         }
-        .chess-square:active .chess-piece { transform: scale(1.2); }
-
         .chess-controls {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             margin-top: 8px;
-            justify-content: center;
+            max-width: 280px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .chess-ctrl-btn {
+            font-size: 11px;
+            padding: 6px;
+            background: #3d2f44;
         }
 
         /* Reactions Panel */
@@ -236,6 +248,7 @@
             width: auto;
         }
         .react-btn:active { transform: scale(1.2); }
+
         .chat-box {
             background: #131017;
             flex-grow: 1;
@@ -248,7 +261,7 @@
             gap: 6px;
             border: 1px solid #3d2f44;
         }
-       
+        
         .bubble {
             max-width: 80%;
             padding: 6px 12px;
@@ -257,7 +270,7 @@
             word-break: break-word;
             line-height: 1.4;
         }
-       
+        
         .bubble.me { background: #ff8bb6; color: #fff; align-self: flex-end; border-bottom-right-radius: 2px; }
         .bubble.them { background: #00adb5; color: #fff; align-self: flex-start; border-bottom-left-radius: 2px; }
         .bubble.sys {
@@ -270,16 +283,12 @@
             text-align: center;
             max-width: 95%;
         }
-        .bubble.react {
-            background: transparent;
-            font-size: 22px;
-            padding: 0;
-            border-radius: 0;
-        }
+        .bubble.react { background: transparent; font-size: 22px; padding: 0; border-radius: 0; }
         .chat-input-container { display: flex; gap: 6px; width: 100%; }
     </style>
 </head>
 <body>
+
     <div class="container">
         <div id="lobbyScreen" class="screen-content">
             <h1>Mind Meld</h1>
@@ -287,43 +296,53 @@
             <button id="findBtn">Find Opponent</button>
             <p id="loadingText" class="hidden" style="color: #ff8bb6; font-weight: bold;">Searching for a partner...</p>
         </div>
+
         <div id="gameScreen" class="screen-content hidden">
             <div class="meta-header">
                 <span class="mode-badge" id="modeBadge">Classic</span>
                 <span class="streak-badge" id="streakBadge">🔥 Streak: 0</span>
             </div>
+
             <div class="alert-banner">
                 <div id="bannerThemeInfo">Theme: <span id="themeText">---</span><span id="timerContainer" class="hidden"> | Time: <span id="timerText">30</span></span></div>
                 <div id="resultAlert">Waiting for connection...</div>
             </div>
+
             <div id="c4Area" class="hidden">
                 <p id="c4Status" style="font-size: 13px; color: #ffca28; margin-bottom: 6px; font-weight: bold;"></p>
                 <div class="c4-grid" id="c4BoardDisplay"></div>
             </div>
+
             <div id="chessArea" class="hidden">
-                <p id="chessStatus" style="font-size: 13px; color: #ffca28; margin-bottom: 6px; font-weight: bold;"></p>
+                <p id="chessStatus" style="font-size: 13px; color: #ffca28; margin-bottom: 4px; font-weight: bold;"></p>
                 <div class="chess-grid" id="chessBoardDisplay"></div>
                 <div class="chess-controls">
-                    <button id="chessUndoBtn" style="flex:1; padding:8px; font-size:13px;">Undo (Ask Opponent)</button>
-                    <button id="chessResignBtn" style="flex:1; padding:8px; font-size:13px; background:#ff4a4a;">Resign</button>
+                    <button class="chess-ctrl-btn" id="chessUndoBtn">Request Undo</button>
+                    <button class="chess-ctrl-btn hidden" id="chessGrantUndoBtn" style="background: #4caf50;">Grant Undo</button>
+                    <button class="chess-ctrl-btn" id="chessResignBtn" style="background: #f44336;">Resign</button>
                 </div>
             </div>
+
             <div id="votingArea" class="hidden">
                 <p class="section-title">1. Vote Modifiers:</p>
                 <div class="grid-box" id="modesGrid"></div>
-               
+                
                 <p class="section-title" id="timerSectionTitle">2. Vote Round Timer (Seconds):</p>
                 <div class="grid-box three-cols" id="timesGrid"></div>
+
                 <p class="section-title" id="themeSectionTitle">3. Vote Category Theme:</p>
                 <div class="grid-box" id="themesGrid"></div>
             </div>
+
             <div id="readyArea" class="hidden">
                 <p id="statusMsg" style="margin-bottom: 8px; font-size: 14px; color: #bfaec4;">Match Connected!</p>
                 <button id="readyBtn">I'm Ready</button>
             </div>
+
             <div id="typingArea" class="hidden">
                 <input type="text" id="wordInput" class="input-style" placeholder="Type your guess here..." autocomplete="off" autocapitalize="off">
             </div>
+
             <div class="reaction-deck">
                 <button class="react-btn" data-emoji="❤️">❤️</button>
                 <button class="react-btn" data-emoji="😘">😘</button>
@@ -333,6 +352,7 @@
                 <button class="react-btn" data-emoji="💀">💀</button>
                 <button class="react-btn" data-emoji="👑">👑</button>
             </div>
+
             <div class="chat-box" id="chatBox"></div>
             <div class="chat-input-container">
                 <input type="text" id="chatInput" class="input-style" placeholder="Send a chat..." autocapitalize="off">
@@ -340,9 +360,11 @@
             </div>
         </div>
     </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
-        import { getDatabase, ref, set, push, onValue, update, remove, onDisconnect, off } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
+        import { getDatabase, ref, set, push, onValue, update, remove, onDisconnect, off } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+
         const firebaseConfig = {
             apiKey: "AIzaSyDTd0toQlWRTlFIX3NygDlFxXtMmKttqyw",
             authDomain: "wordgame-f139a.firebaseapp.com",
@@ -352,31 +374,37 @@
             appId: "1:82881953481:web:5fbf80826d4d864add1718",
             databaseURL: "https://wordgame-f139a-default-rtdb.firebaseio.com"
         };
+
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
+
         const THEMES = ["Places", "Objects", "Animals", "Food", "Movies", "Superheroes", "Games", "Colors", "Jobs", "Brands"];
         const MODES = ["Classic", "Lightning", "Mystery", "Connect 4", "Normal Connect 4", "Chess", "Normal Chess"];
         const TIMES = [10, 20, 30];
-       
+
+        const PIECES = {
+            'R': '♜', 'N': '♞', 'B': '♝', 'Q': '♛', 'K': '♚', 'P': '♟',
+            'r': '♖', 'n': '♘', 'b': '♗', 'q': '♕', 'k': '♔', 'p': '♙',
+            '.': ''
+        };
+        const INITIAL_CHESS = [
+            'r','n','b','q','k','b','n','r',
+            'p','p','p','p','p','p','p','p',
+            '.','.','.','.','.','.','.','.',
+            '.','.','.','.','.','.','.','.',
+            '.','.','.','.','.','.','.','.',
+            '.','.','.','.','.','.','.','.',
+            'P','P','P','P','P','P','P','P',
+            'R','N','B','Q','K','B','N','R'
+        ];
+        
         let playerId = localStorage.getItem("mm_pid") || "p_" + Math.random().toString(36).substr(2, 9);
         localStorage.setItem("mm_pid", playerId);
+
         let matchId = null, playerRole = null, timerInterval = null, currentMatchListener = null;
-        let hasSubmitted = false;
-        window.c4DelayTimeout = null;
-        window.c4CountdownInterval = null;
-
-        // Chess variables
-        let chessBoard = [];
-        let chessTurn = "w";
-        let chessMovesMade = 0;
-        let selectedSquare = null;
-        let lastMoveFrom = null;
-        let lastMoveTo = null;
-        let chessGameOver = false;
-        let pendingUndoRequest = false;
-        let opponentUndoGranted = false;
-
-        const NORMAL_MODES = ["Normal Connect 4", "Normal Chess"];
+        let hasSubmitted = false, selectedSquare = null, validDestinations = [];
+        window.c4DelayTimeout = null; window.c4CountdownInterval = null;
+        window.chessDelayTimeout = null; window.chessCountdownInterval = null;
 
         const lobbyScreen = document.getElementById("lobbyScreen");
         const gameScreen = document.getElementById("gameScreen");
@@ -397,14 +425,12 @@
         const c4Area = document.getElementById("c4Area");
         const c4Status = document.getElementById("c4Status");
         const c4BoardDisplay = document.getElementById("c4BoardDisplay");
-        
-        // Chess DOM
         const chessArea = document.getElementById("chessArea");
         const chessStatus = document.getElementById("chessStatus");
         const chessBoardDisplay = document.getElementById("chessBoardDisplay");
         const chessUndoBtn = document.getElementById("chessUndoBtn");
+        const chessGrantUndoBtn = document.getElementById("chessGrantUndoBtn");
         const chessResignBtn = document.getElementById("chessResignBtn");
-
         const wordInput = document.getElementById("wordInput");
         const chatBox = document.getElementById("chatBox");
         const chatInput = document.getElementById("chatInput");
@@ -414,179 +440,227 @@
         const timerSectionTitle = document.getElementById("timerSectionTitle");
         const themeSectionTitle = document.getElementById("themeSectionTitle");
         const bannerThemeInfo = document.getElementById("bannerThemeInfo");
+
         const connectedRef = ref(db, ".info/connected");
-        onValue(connectedRef, (snap) => {
-            if (snap.val() === false && matchId) {
-                handleDisconnection();
-            }
-        });
+        onValue(connectedRef, (snap) => { if (snap.val() === false && matchId) handleDisconnection(); });
+
         findBtn.onclick = () => {
-            findBtn.classList.add("hidden");
-            loadingText.classList.remove("hidden");
+            findBtn.classList.add("hidden"); loadingText.classList.remove("hidden");
             const queueRef = ref(db, "queue");
             onDisconnect(ref(db, `queue/${playerId}`)).remove();
+
             onValue(queueRef, (snap) => {
                 if (matchId) return;
                 const queue = snap.val();
                 if (queue) {
                     const opponent = Object.keys(queue).find(k => k !== playerId);
                     if (opponent) {
-                        matchId = `m_${opponent}_${playerId}`;
-                        playerRole = "p2";
-                       
-                        remove(ref(db, `queue/${opponent}`));
-                        remove(ref(db, `queue/${playerId}`));
+                        matchId = `m_${opponent}_${playerId}`; playerRole = "p2";
+                        remove(ref(db, `queue/${opponent}`)); remove(ref(db, `queue/${playerId}`));
+
                         set(ref(db, `matches/${matchId}`), {
                             p1: opponent, p2: playerId,
                             currentTheme: THEMES[Math.floor(Math.random() * THEMES.length)],
-                            currentMode: "Classic",
-                            customDuration: 30,
+                            currentMode: "Classic", customDuration: 30,
                             state: "voting", p1Ready: false, p2Ready: false, streak: 0,
                             c4Board: Array(42).fill("empty"), c4Turn: "p1",
-                            lastSyncResult: "",
-                            chessBoard: null,
-                            chessTurn: "w",
-                            chessMovesThisSync: 0,
-                            chessWinner: null
+                            chessBoard: INITIAL_CHESS, chessTurn: "p1", chessMovesLeft: 0, undoRequested: "",
+                            lastSyncResult: ""
                         }).then(() => initMatch());
                     }
                 } else {
-                    set(ref(db, `queue/${playerId}`), true);
-                    playerRole = "p1";
-                    listenForMatch();
+                    set(ref(db, `queue/${playerId}`), true); playerRole = "p1"; listenForMatch();
                 }
             }, { onlyOnce: true });
         };
+
         function listenForMatch() {
-            const matchesRef = ref(db, "matches");
-            onValue(matchesRef, (snap) => {
+            onValue(ref(db, "matches"), (snap) => {
                 const matches = snap.val();
                 if (matches && !matchId) {
                     for (let id in matches) {
                         if (matches[id].p1 === playerId) {
-                            matchId = id;
-                            remove(ref(db, `queue/${playerId}`));
-                            initMatch();
-                            break;
+                            matchId = id; remove(ref(db, `queue/${playerId}`)); initMatch(); break;
                         }
                     }
                 }
             });
         }
+
         function renderVoteInterfaces(votesData, modeVotesData, timeVotesData) {
-            themesGrid.innerHTML = "";
-            modesGrid.innerHTML = "";
-            timesGrid.innerHTML = "";
-           
-            const tCounts = {}; THEMES.forEach(t => tCounts[t] = 0);
-            const mCounts = {}; MODES.forEach(m => mCounts[m] = 0);
-            const tmCounts = {}; TIMES.forEach(tm => tmCounts[tm] = 0);
-            if (votesData) {
-                if (votesData.p1) tCounts[votesData.p1]++;
-                if (votesData.p2) tCounts[votesData.p2]++;
-            }
-            if (modeVotesData) {
-                if (modeVotesData.p1) mCounts[modeVotesData.p1]++;
-                if (modeVotesData.p2) mCounts[modeVotesData.p2]++;
-            }
-            if (timeVotesData) {
-                if (timeVotesData.p1) tmCounts[timeVotesData.p1]++;
-                if (timeVotesData.p2) tmCounts[timeVotesData.p2]++;
-            }
+            themesGrid.innerHTML = ""; modesGrid.innerHTML = ""; timesGrid.innerHTML = "";
+            const tCounts = {}, mCounts = {}, tmCounts = {};
+            THEMES.forEach(t => tCounts[t] = 0); MODES.forEach(m => mCounts[m] = 0); TIMES.forEach(tm => tmCounts[tm] = 0);
+
+            if (votesData) { if (votesData.p1) tCounts[votesData.p1]++; if (votesData.p2) tCounts[votesData.p2]++; }
+            if (modeVotesData) { if (modeVotesData.p1) mCounts[modeVotesData.p1]++; if (modeVotesData.p2) mCounts[modeVotesData.p2]++; }
+            if (timeVotesData) { if (timeVotesData.p1) tmCounts[timeVotesData.p1]++; if (timeVotesData.p2) tmCounts[timeVotesData.p2]++; }
+
             MODES.forEach(m => {
                 const b = document.createElement("button");
                 b.className = "mode-btn";
-                if (NORMAL_MODES.includes(m)) b.classList.add("normal-mode");
+                if (m.startsWith("Normal ")) b.classList.add("normal-mode-highlight");
                 if (modeVotesData && modeVotesData[playerRole] === m) b.classList.add("active");
                 b.innerText = mCounts[m] > 0 ? `${m} (${mCounts[m]})` : m;
                 b.onclick = () => set(ref(db, `matches/${matchId}/modeVotes/${playerRole}`), m);
                 modesGrid.appendChild(b);
             });
+
             TIMES.forEach(tm => {
-                const b = document.createElement("button");
-                b.className = "time-btn";
+                const b = document.createElement("button"); b.className = "time-btn";
                 if (timeVotesData && timeVotesData[playerRole] === tm) b.classList.add("active");
                 b.innerText = tmCounts[tm] > 0 ? `${tm}s (${tmCounts[tm]})` : `${tm}s`;
                 b.onclick = () => set(ref(db, `matches/${matchId}/timeVotes/${playerRole}`), tm);
                 timesGrid.appendChild(b);
             });
+
             THEMES.forEach(t => {
-                const b = document.createElement("button");
-                b.className = "theme-btn";
+                const b = document.createElement("button"); b.className = "theme-btn";
                 if (votesData && votesData[playerRole] === t) b.classList.add("active");
                 b.innerText = tCounts[t] > 0 ? `${t} (${tCounts[t]})` : t;
                 b.onclick = () => set(ref(db, `matches/${matchId}/votes/${playerRole}`), t);
                 themesGrid.appendChild(b);
             });
         }
-        function checkC4Win(board) {
-            for (let r = 0; r < 6; r++) {
-                for (let c = 0; c < 4; c++) {
-                    let i = r * 7 + c;
-                    if (board[i] && board[i] !== "empty" && board[i] === board[i+1] && board[i] === board[i+2] && board[i] === board[i+3]) return { winner: board[i], indices: [i, i+1, i+2, i+3] };
+
+        function isWhitePiece(char) { return char !== '.' && char === char.toUpperCase(); }
+        function isBlackPiece(char) { return char !== '.' && char === char.toLowerCase(); }
+        
+        function generateValidMoves(idx, board) {
+            const moves = []; const piece = board[idx]; if (piece === '.') return moves;
+            const r = Math.floor(idx / 8), c = idx % 8;
+            const isWhite = isWhitePiece(piece);
+            const myPiece = (checkIdx) => isWhite ? isWhitePiece(board[checkIdx]) : isBlackPiece(board[checkIdx]);
+            const oppPiece = (checkIdx) => isWhite ? isBlackPiece(board[checkIdx]) : isWhitePiece(board[checkIdx]);
+
+            if (piece.toUpperCase() === 'P') {
+                const dir = isWhite ? -1 : 1; const startRow = isWhite ? 6 : 1;
+                const f1 = (r + dir) * 8 + c;
+                if (r + dir >= 0 && r + dir < 8 && board[f1] === '.') {
+                    moves.push(f1);
+                    const f2 = (r + 2 * dir) * 8 + c;
+                    if (r === startRow && board[f2] === '.') moves.push(f2);
+                }
+                for (let dc of [-1, 1]) {
+                    if (c + dc >= 0 && c + dc < 8) {
+                        const capIdx = (r + dir) * 8 + (c + dc);
+                        if (oppPiece(capIdx)) moves.push(capIdx);
+                    }
+                }
+            } else if (piece.toUpperCase() === 'N') {
+                const offsets = [[-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]];
+                for (let [dr, dc] of offsets) {
+                    if (r+dr>=0 && r+dr<8 && c+dc>=0 && c+dc<8) {
+                        const target = (r+dr)*8 + (c+dc);
+                        if (!myPiece(target)) moves.push(target);
+                    }
+                }
+            } else if (piece.toUpperCase() === 'B' || piece.toUpperCase() === 'R' || piece.toUpperCase() === 'Q') {
+                const dirs = [];
+                if (piece.toUpperCase() === 'B' || piece.toUpperCase() === 'Q') dirs.push([-1,-1],[-1,1],[1,-1],[1,1]);
+                if (piece.toUpperCase() === 'R' || piece.toUpperCase() === 'Q') dirs.push([-1,0],[1,0],[0,-1],[0,1]);
+                for (let [dr, dc] of dirs) {
+                    let currR = r + dr, currC = c + dc;
+                    while (currR >= 0 && currR < 8 && currC >= 0 && currC < 8) {
+                        const target = currR * 8 + currC;
+                        if (board[target] === '.') { moves.push(target); }
+                        else { if (oppPiece(target)) moves.push(target); break; }
+                        currR += dr; currC += dc;
+                    }
+                }
+            } else if (piece.toUpperCase() === 'K') {
+                for (let dr = -1; dr <= 1; dr++) {
+                    for (let dc = -1; dc <= 1; dc++) {
+                        if (dr === 0 && dc === 0) continue;
+                        if (r+dr>=0 && r+dr<8 && c+dc>=0 && c+dc<8) {
+                            const target = (r+dr)*8 + (c+dc);
+                            if (!myPiece(target)) moves.push(target);
+                        }
+                    }
                 }
             }
-            for (let r = 0; r < 3; r++) {
-                for (let c = 0; c < 7; c++) {
-                    let i = r * 7 + c;
-                    if (board[i] && board[i] !== "empty" && board[i] === board[i+7] && board[i] === board[i+14] && board[i] === board[i+21]) return { winner: board[i], indices: [i, i+7, i+14, i+21] };
-                }
-            }
-            for (let r = 0; r < 3; r++) {
-                for (let c = 0; c < 4; c++) {
-                    let i = r * 7 + c;
-                    if (board[i] && board[i] !== "empty" && board[i] === board[i+8] && board[i] === board[i+16] && board[i] === board[i+24]) return { winner: board[i], indices: [i, i+8, i+16, i+24] };
-                }
-            }
-            for (let r = 0; r < 3; r++) {
-                for (let c = 3; c < 7; c++) {
-                    let i = r * 7 + c;
-                    if (board[i] && board[i] !== "empty" && board[i] === board[i+6] && board[i] === board[i+12] && board[i] === board[i+18]) return { winner: board[i], indices: [i, i+6, i+12, i+18] };
-                }
-            }
+            return moves;
+        }
+
+        function checkKingMissing(board) {
+            let whiteKing = board.includes('K'), blackKing = board.includes('k');
+            if (!whiteKing) return 'p2'; if (!blackKing) return 'p1';
             return null;
         }
+
+        function renderChessBoard(boardArray, interactive) {
+            chessBoardDisplay.innerHTML = "";
+            boardArray.forEach((cell, i) => {
+                const sq = document.createElement("div");
+                const r = Math.floor(i / 8), c = i % 8;
+                sq.className = `chess-square ${(r + c) % 2 === 0 ? 'light' : 'dark'}`;
+                sq.innerText = PIECES[cell] || '';
+                
+                if (selectedSquare === i) sq.classList.add("selected");
+                if (validDestinations.includes(i)) sq.classList.add("valid-dest");
+
+                if (interactive) {
+                    sq.onclick = () => {
+                        const isWhiteTurn = (playerRole === "p1");
+                        if (validDestinations.includes(i) && selectedSquare !== null) {
+                            let movingPiece = boardArray[selectedSquare];
+                            const nextBoard = [...boardArray];
+                            nextBoard[i] = movingPiece; nextBoard[selectedSquare] = '.';
+                            
+                            // Handle simple automatic Queening Promotion
+                            if (movingPiece === 'P' && Math.floor(i / 8) === 0) nextBoard[i] = 'Q';
+                            if (movingPiece === 'p' && Math.floor(i / 8) === 7) nextBoard[i] = 'q';
+
+                            selectedSquare = null; validDestinations = [];
+                            
+                            const kingWin = checkKingMissing(nextBoard);
+                            if (kingWin) {
+                                update(ref(db, `matches/${matchId}`), { chessBoard: nextBoard, state: "chesswin", chessWinner: kingWin });
+                            } else {
+                                let nextTurn = isWhiteTurn ? "p2" : "p1";
+                                update(ref(db, `matches/${matchId}`), {
+                                    chessBoard: nextBoard, chessTurn: nextTurn, state: "chessvisualdelay",
+                                    historyBoard: boardArray 
+                                });
+                            }
+                        } else {
+                            if ((isWhiteTurn && isWhitePiece(cell)) || (!isWhiteTurn && isBlackPiece(cell))) {
+                                selectedSquare = i; validDestinations = generateValidMoves(i, boardArray);
+                                renderChessBoard(boardArray, true);
+                            }
+                        }
+                    };
+                }
+                chessBoardDisplay.appendChild(sq);
+            });
+        }
+
+        function checkC4Win(board) {
+            for (let r = 0; r < 6; r++) { for (let c = 0; c < 4; c++) { let i = r * 7 + c; if (board[i] && board[i] !== "empty" && board[i] === board[i+1] && board[i] === board[i+2] && board[i] === board[i+3]) return { winner: board[i], indices: [i, i+1, i+2, i+3] }; } }
+            for (let r = 0; r < 3; r++) { for (let c = 0; c < 7; c++) { let i = r * 7 + c; if (board[i] && board[i] !== "empty" && board[i] === board[i+7] && board[i] === board[i+14] && board[i] === board[i+21]) return { winner: board[i], indices: [i, i+7, i+14, i+21] }; } }
+            for (let r = 0; r < 3; r++) { for (let c = 0; c < 4; c++) { let i = r * 7 + c; if (board[i] && board[i] !== "empty" && board[i] === board[i+8] && board[i] === board[i+16] && board[i] === board[i+24]) return { winner: board[i], indices: [i, i+8, i+16, i+24] }; } }
+            for (let r = 0; r < 3; r++) { for (let c = 3; c < 7; c++) { let i = r * 7 + c; if (board[i] && board[i] !== "empty" && board[i] === board[i+6] && board[i] === board[i+12] && board[i] === board[i+18]) return { winner: board[i], indices: [i, i+6, i+12, i+18] }; } }
+            return null;
+        }
+
         function renderC4Board(boardArray, interactive, winIndices = []) {
             c4BoardDisplay.innerHTML = "";
             boardArray.forEach((cell, i) => {
-                const slot = document.createElement("div");
-                slot.className = "c4-slot " + cell;
+                const slot = document.createElement("div"); slot.className = "c4-slot " + cell;
                 if (cell === "empty") slot.classList.add("empty");
-               
-                if (winIndices && winIndices.includes(i)) {
-                    slot.classList.add("winning-highlight");
-                }
-               
+                if (winIndices && winIndices.includes(i)) slot.classList.add("winning-highlight");
+                
                 if (interactive && cell === "empty") {
                     slot.onclick = () => {
-                        const col = i % 7;
-                        let targetIndex = -1;
-                        for (let row = 5; row >= 0; row--) {
-                            let idx = row * 7 + col;
-                            if (boardArray[idx] === "empty") {
-                                targetIndex = idx;
-                                break;
-                            }
-                        }
+                        const col = i % 7; let targetIndex = -1;
+                        for (let row = 5; row >= 0; row--) { let idx = row * 7 + col; if (boardArray[idx] === "empty") { targetIndex = idx; break; } }
                         if (targetIndex !== -1) {
-                            const updatedBoard = [...boardArray];
-                            updatedBoard[targetIndex] = playerRole;
+                            const updatedBoard = [...boardArray]; updatedBoard[targetIndex] = playerRole;
                             const winData = checkC4Win(updatedBoard);
-                           
                             if (winData) {
-                                update(ref(db, `matches/${matchId}`), {
-                                    c4Board: updatedBoard,
-                                    state: "c4win",
-                                    c4Winner: winData.winner,
-                                    winningCells: winData.indices
-                                });
+                                update(ref(db, `matches/${matchId}`), { c4Board: updatedBoard, state: "c4win", c4Winner: winData.winner, winningCells: winData.indices });
                             } else {
-                                let nextTurn = (playerRole === "p1") ? "p2" : "p1";
-                                update(ref(db, `matches/${matchId}`), {
-                                    c4Board: updatedBoard,
-                                    c4Turn: nextTurn,
-                                    state: "c4visualdelay"
-                                });
+                                update(ref(db, `matches/${matchId}`), { c4Board: updatedBoard, c4Turn: (playerRole === "p1" ? "p2" : "p1"), state: "c4visualdelay" });
                             }
                         }
                     };
@@ -595,217 +669,44 @@
             });
         }
 
-        // Chess logic
-        const pieceUnicode = {
-            'K': '♔', 'Q': '♕', 'R': '♖', 'B': '♗', 'N': '♘', 'P': '♙',
-            'k': '♚', 'q': '♛', 'r': '♜', 'b': '♝', 'n': '♞', 'p': '♟'
-        };
-
-        function initChessBoard() {
-            return [
-                ['r','n','b','q','k','b','n','r'],
-                ['p','p','p','p','p','p','p','p'],
-                ['.','.','.','.','.','.','.','.'],
-                ['.','.','.','.','.','.','.','.'],
-                ['.','.','.','.','.','.','.','.'],
-                ['.','.','.','.','.','.','.','.'],
-                ['P','P','P','P','P','P','P','P'],
-                ['R','N','B','Q','K','B','N','R']
-            ];
-        }
-
-        function isValidChessMove(board, fromRow, fromCol, toRow, toCol, playerColor) {
-            const piece = board[fromRow][fromCol];
-            if (!piece || piece === '.') return false;
-            const isWhite = piece === piece.toUpperCase();
-            if ((playerRole === "p1" && !isWhite) || (playerRole === "p2" && isWhite)) return false;
-
-            const target = board[toRow][toCol];
-            if (target !== '.' && ((isWhite && target === target.toUpperCase()) || (!isWhite && target === target.toLowerCase()))) return false;
-
-            const dr = toRow - fromRow;
-            const dc = toCol - fromCol;
-            const absDr = Math.abs(dr);
-            const absDc = Math.abs(dc);
-
-            switch (piece.toLowerCase()) {
-                case 'p':
-                    const dir = isWhite ? -1 : 1;
-                    if (dc === 0 && target === '.' && dr === dir) return true;
-                    if (dc === 0 && target === '.' && fromRow === (isWhite ? 6 : 1) && dr === 2 * dir && board[fromRow + dir][fromCol] === '.') return true;
-                    if (absDc === 1 && dr === dir && target !== '.') return true;
-                    return false;
-                case 'r':
-                    if (dr !== 0 && dc !== 0) return false;
-                    return isPathClear(board, fromRow, fromCol, toRow, toCol);
-                case 'n':
-                    return (absDr === 2 && absDc === 1) || (absDr === 1 && absDc === 2);
-                case 'b':
-                    if (absDr !== absDc) return false;
-                    return isPathClear(board, fromRow, fromCol, toRow, toCol);
-                case 'q':
-                    if (dr !== 0 && dc !== 0 && absDr !== absDc) return false;
-                    return isPathClear(board, fromRow, fromCol, toRow, toCol);
-                case 'k':
-                    if (absDr <= 1 && absDc <= 1) return true;
-                    return false;
-            }
-            return false;
-        }
-
-        function isPathClear(board, fromRow, fromCol, toRow, toCol) {
-            const dr = Math.sign(toRow - fromRow);
-            const dc = Math.sign(toCol - fromCol);
-            let r = fromRow + dr;
-            let c = fromCol + dc;
-            while (r !== toRow || c !== toCol) {
-                if (board[r][c] !== '.') return false;
-                r += dr;
-                c += dc;
-            }
-            return true;
-        }
-
-        function makeChessMove(board, fromRow, fromCol, toRow, toCol) {
-            const newBoard = board.map(row => [...row]);
-            const piece = newBoard[fromRow][fromCol];
-            newBoard[toRow][toCol] = piece;
-            newBoard[fromRow][fromCol] = '.';
-            
-            // Simple promotion to Queen
-            if (piece === 'P' && toRow === 0) newBoard[toRow][toCol] = 'Q';
-            if (piece === 'p' && toRow === 7) newBoard[toRow][toCol] = 'q';
-            
-            return newBoard;
-        }
-
-        function renderChessBoard(board, interactive) {
-            chessBoardDisplay.innerHTML = "";
-            for (let row = 0; row < 8; row++) {
-                for (let col = 0; col < 8; col++) {
-                    const square = document.createElement("div");
-                    square.className = `chess-square ${(row + col) % 2 === 0 ? "light" : "dark"}`;
-                    const piece = board[row][col];
-                    if (piece !== '.') {
-                        const pieceEl = document.createElement("span");
-                        pieceEl.className = "chess-piece";
-                        pieceEl.innerHTML = pieceUnicode[piece] || piece;
-                        square.appendChild(pieceEl);
-                    }
-                    if (lastMoveFrom && lastMoveFrom[0] === row && lastMoveFrom[1] === col) {
-                        square.classList.add("last-move");
-                    }
-                    if (lastMoveTo && lastMoveTo[0] === row && lastMoveTo[1] === col) {
-                        square.classList.add("last-move");
-                    }
-                    if (interactive) {
-                        square.onclick = () => handleChessSquareClick(row, col, board);
-                    }
-                    chessBoardDisplay.appendChild(square);
-                }
-            }
-        }
-
-        function handleChessSquareClick(row, col, board) {
-            if (chessGameOver) return;
-            if (selectedSquare) {
-                const [sRow, sCol] = selectedSquare;
-                if (sRow === row && sCol === col) {
-                    selectedSquare = null;
-                    renderChessBoard(board, true);
-                    return;
-                }
-                if (isValidChessMove(board, sRow, sCol, row, col, chessTurn)) {
-                    const newBoard = makeChessMove(board, sRow, sCol, row, col);
-                    lastMoveFrom = [sRow, sCol];
-                    lastMoveTo = [row, col];
-                    
-                    update(ref(db, `matches/${matchId}`), {
-                        chessBoard: newBoard,
-                        chessTurn: chessTurn === "w" ? "b" : "w",
-                        chessMovesThisSync: (chessMovesMade || 0) + 1,
-                        state: "chessvisualdelay"
-                    });
-                    selectedSquare = null;
-                } else {
-                    selectedSquare = null;
-                    renderChessBoard(board, true);
-                }
-            } else {
-                const piece = board[row][col];
-                if (piece !== '.' && ((playerRole === "p1" && piece === piece.toUpperCase()) || (playerRole === "p2" && piece === piece.toLowerCase()))) {
-                    selectedSquare = [row, col];
-                    renderChessBoard(board, true);
-                    const squares = chessBoardDisplay.children;
-                    for (let sq of squares) {
-                        if (sq.classList.contains("selected")) sq.classList.remove("selected");
-                    }
-                    // Highlight selected
-                    const idx = row * 8 + col;
-                    if (squares[idx]) squares[idx].classList.add("selected");
-                }
-            }
-        }
-
-        function checkChessWin(board) {
-            let whiteKing = false, blackKing = false;
-            for (let r = 0; r < 8; r++) {
-                for (let c = 0; c < 8; c++) {
-                    if (board[r][c] === 'K') whiteKing = true;
-                    if (board[r][c] === 'k') blackKing = true;
-                }
-            }
-            if (!whiteKing) return "b";
-            if (!blackKing) return "w";
-            return null;
-        }
-
         function initMatch() {
-            off(ref(db, "matches"));
-            onDisconnect(ref(db, `matches/${matchId}`)).remove();
-            lobbyScreen.classList.add("hidden");
-            gameScreen.classList.remove("hidden");
+            off(ref(db, "matches")); onDisconnect(ref(db, `matches/${matchId}`)).remove();
+            lobbyScreen.classList.add("hidden"); gameScreen.classList.remove("hidden");
             renderVoteInterfaces(null, null, null);
+
             currentMatchListener = onValue(ref(db, `matches/${matchId}`), (snap) => {
-                const data = snap.val();
-                if (!data) {
-                    handleDisconnection();
-                    return;
-                }
+                const data = snap.val(); if (!data) { handleDisconnection(); return; }
+
                 const currentStreak = data.streak || 0;
                 const activeMode = data.currentMode || "Classic";
                 const activeDuration = data.customDuration || 30;
-                streakBadge.innerText = `🔥 Streak: ${currentStreak}`;
-                modeBadge.innerText = activeMode;
-                if (activeMode === "Normal Connect 4" || activeMode === "Normal Chess") {
-                    bannerThemeInfo.classList.add("hidden");
-                    streakBadge.classList.add("hidden");
+                streakBadge.innerText = `🔥 Streak: ${currentStreak}`; modeBadge.innerText = activeMode;
+
+                if (activeMode.startsWith("Normal ")) {
+                    bannerThemeInfo.classList.add("hidden"); streakBadge.classList.add("hidden");
                 } else {
-                    bannerThemeInfo.classList.remove("hidden");
-                    streakBadge.classList.remove("hidden");
-                    if (activeMode === "Mystery" && data.state === "typing") {
-                        themeText.innerText = "❓ MYSTERY (No Clues!)";
-                    } else {
-                        themeText.innerText = data.currentTheme;
-                    }
+                    bannerThemeInfo.classList.remove("hidden"); streakBadge.classList.remove("hidden");
+                    if (activeMode === "Mystery" && data.state === "typing") themeText.innerText = "❓ MYSTERY (No Clues!)";
+                    else themeText.innerText = data.currentTheme;
                 }
+
                 renderVoteInterfaces(data.votes, data.modeVotes, data.timeVotes);
-                // Word Matching evaluator
+
+                // Word Match Evaluator
                 if (data.answers?.p1 && data.answers?.p2) {
-                    clearInterval(timerInterval);
-                    let syncString = "";
+                    clearInterval(timerInterval); let syncString = "";
                     if (data.answers.p1 === data.answers.p2 && data.answers.p1 !== "[nothing]") {
                         syncString = `🎉 MIND SYNCED! Both typed: "${data.answers.p1.toUpperCase()}"!`;
-                        if (playerRole === "p1" && data.state !== "resetting" && data.state !== "c4play" && data.state !== "c4visualdelay" && data.state !== "c4win" && data.state !== "chessplay" && data.state !== "chessvisualdelay" && data.state !== "chesswin") {
-                            if (activeMode === "Connect 4" || activeMode === "Chess") {
-                                const newState = activeMode === "Connect 4" ? "c4play" : "chessplay";
-                                update(ref(db, `matches/${matchId}`), { state: newState, streak: currentStreak + 1, answers: null, lastSyncResult: syncString, chessMovesThisSync: 0 });
+                        if (playerRole === "p1" && !["c4play","c4visualdelay","c4win","chessplay","chessvisualdelay","chesswin","resetting"].includes(data.state)) {
+                            if (activeMode === "Connect 4") {
+                                update(ref(db, `matches/${matchId}`), { state: "c4play", streak: currentStreak + 1, answers: null, lastSyncResult: syncString });
+                            } else if (activeMode === "Chess") {
+                                update(ref(db, `matches/${matchId}`), { state: "chessplay", chessMovesLeft: 10, streak: currentStreak + 1, answers: null, lastSyncResult: syncString });
                             } else {
                                 update(ref(db, `matches/${matchId}`), { state: "resetting", streak: currentStreak + 1, lastSyncResult: syncString });
                                 setTimeout(() => {
-                                    update(ref(db, `matches/${matchId}`), {
-                                        state: "voting",
-                                        currentTheme: THEMES[Math.floor(Math.random() * THEMES.length)],
+                                    update(ref(db, `matches/${matchId}`), { 
+                                        state: "voting", currentTheme: THEMES[Math.floor(Math.random() * THEMES.length)], 
                                         p1Ready: false, p2Ready: false, answers: null, votes: null, modeVotes: null, timeVotes: null
                                     });
                                 }, 4000);
@@ -813,405 +714,251 @@
                         }
                     } else {
                         syncString = `❌ Miss! P1: "${data.answers.p1}" | P2: "${data.answers.p2}". Retrying...`;
-                        if (playerRole === "p1" && data.state !== "resetting" && data.state !== "c4play" && data.state !== "c4visualdelay" && data.state !== "c4win" && data.state !== "chessplay" && data.state !== "chessvisualdelay" && data.state !== "chesswin") {
+                        if (playerRole === "p1" && !["c4play","c4visualdelay","c4win","chessplay","chessvisualdelay","chesswin","resetting"].includes(data.state)) {
                             update(ref(db, `matches/${matchId}`), { state: "resetting", streak: 0, lastSyncResult: syncString });
                             setTimeout(() => {
-                                const randomTheme = (activeMode === "Connect 4" || activeMode === "Chess") ? THEMES[Math.floor(Math.random() * THEMES.length)] : data.currentTheme;
-                                update(ref(db, `matches/${matchId}`), {
-                                    state: "waiting",
-                                    p1Ready: false,
-                                    p2Ready: false,
-                                    answers: null,
-                                    currentTheme: randomTheme
-                                });
+                                const randomTheme = ["Connect 4", "Chess"].includes(activeMode) ? THEMES[Math.floor(Math.random() * THEMES.length)] : data.currentTheme;
+                                update(ref(db, `matches/${matchId}`), { state: "waiting", p1Ready: false, p2Ready: false, answers: null, currentTheme: randomTheme });
                             }, 4000);
                         }
                     }
-                    resultAlert.innerHTML = syncString;
-                    return;
+                    resultAlert.innerHTML = syncString; return; 
                 }
-                if (data.state === "voting" || data.state === "waiting") {
-                    hasSubmitted = false;
-                }
-                // Configuration choice evaluator logic
+
+                if (data.state === "voting" || data.state === "waiting") hasSubmitted = false;
+
+                // Voting Filter Logic
                 if (data.state === "voting") {
                     const currentModeVote = data.modeVotes?.[playerRole];
-                    if (currentModeVote === "Normal Connect 4" || currentModeVote === "Normal Chess") {
-                        timerSectionTitle.classList.add("hidden");
-                        timesGrid.classList.add("hidden");
-                        themeSectionTitle.classList.add("hidden");
-                        themesGrid.classList.add("hidden");
+                    if (currentModeVote && currentModeVote.startsWith("Normal ")) {
+                        timerSectionTitle.classList.add("hidden"); timesGrid.classList.add("hidden");
+                        themeSectionTitle.classList.add("hidden"); themesGrid.classList.add("hidden");
                     } else {
-                        timerSectionTitle.classList.remove("hidden");
-                        timesGrid.classList.remove("hidden");
-                        themeSectionTitle.classList.remove("hidden");
-                        themesGrid.classList.remove("hidden");
+                        timerSectionTitle.classList.remove("hidden"); timesGrid.classList.remove("hidden");
+                        themeSectionTitle.classList.remove("hidden"); themesGrid.classList.remove("hidden");
                     }
+
                     if (data.modeVotes?.p1 && data.modeVotes?.p2) {
                         let chosenMode = data.modeVotes.p1 === data.modeVotes.p2 ? data.modeVotes.p1 : (Math.random() > 0.5 ? data.modeVotes.p1 : data.modeVotes.p2);
-                       
-                        if (chosenMode === "Normal Connect 4" || chosenMode === "Normal Chess") {
+                        if (chosenMode.startsWith("Normal ")) {
                             if (playerRole === "p1") {
-                                const initState = chosenMode === "Normal Connect 4" ? "c4play" : "chessplay";
-                                update(ref(db, `matches/${matchId}`), {
-                                    currentMode: chosenMode,
-                                    state: initState,
-                                    votes: null, modeVotes: null, timeVotes: null,
-                                    c4Board: Array(42).fill("empty"), c4Turn: "p1",
-                                    chessBoard: initChessBoard(),
-                                    chessTurn: "w",
-                                    chessMovesThisSync: 0,
-                                    lastSyncResult: ""
-                                });
+                                if (chosenMode === "Normal Connect 4") {
+                                    update(ref(db, `matches/${matchId}`), { currentMode: chosenMode, state: "c4play", votes: null, modeVotes: null, timeVotes: null, c4Board: Array(42).fill("empty"), c4Turn: "p1", lastSyncResult: "" });
+                                } else if (chosenMode === "Normal Chess") {
+                                    update(ref(db, `matches/${matchId}`), { currentMode: chosenMode, state: "chessplay", votes: null, modeVotes: null, timeVotes: null, chessBoard: INITIAL_CHESS, chessTurn: "p1", chessMovesLeft: 9999, lastSyncResult: "" });
+                                }
                             }
                             return;
                         } else if (data.votes?.p1 && data.votes?.p2 && data.timeVotes?.p1 && data.timeVotes?.p2) {
                             if (playerRole === "p1") {
                                 let chosenTheme = data.votes.p1 === data.votes.p2 ? data.votes.p1 : (Math.random() > 0.5 ? data.votes.p1 : data.votes.p2);
                                 let chosenTime = data.timeVotes.p1 === data.timeVotes.p2 ? data.timeVotes.p1 : (Math.random() > 0.5 ? data.timeVotes.p1 : data.timeVotes.p2);
-                               
-                                update(ref(db, `matches/${matchId}`), {
-                                    currentTheme: chosenTheme,
-                                    currentMode: chosenMode,
-                                    customDuration: chosenTime,
-                                    state: "waiting",
-                                    votes: null, modeVotes: null, timeVotes: null,
-                                    lastSyncResult: ""
-                                });
+                                update(ref(db, `matches/${matchId}`), { currentTheme: chosenTheme, currentMode: chosenMode, customDuration: chosenTime, state: "waiting", votes: null, modeVotes: null, timeVotes: null, lastSyncResult: "" });
                             }
                             return;
                         }
                     }
                 }
-                // Layout View Management & Message persistence
+
+                // Layout Router
                 if (data.state === "voting") {
                     resultAlert.innerText = "🗳️ Vote for configuration options!";
-                    votingArea.classList.remove("hidden");
-                    readyArea.classList.add("hidden");
-                    typingArea.classList.add("hidden");
-                    timerContainer.classList.add("hidden");
-                    c4Area.classList.add("hidden");
-                    chessArea.classList.add("hidden");
+                    votingArea.classList.remove("hidden"); readyArea.classList.add("hidden"); typingArea.classList.add("hidden"); timerContainer.classList.add("hidden"); c4Area.classList.add("hidden"); chessArea.classList.add("hidden");
                 }
                 if (data.state === "waiting") {
-                    votingArea.classList.add("hidden");
-                    readyArea.classList.remove("hidden");
-                    readyBtn.classList.remove("hidden");
-                    typingArea.classList.add("hidden");
-                    timerContainer.classList.add("hidden");
-                    c4Area.classList.add("hidden");
-                    chessArea.classList.add("hidden");
-                    const myReadyStatus = data[`${playerRole}Ready`];
-                    readyBtn.disabled = myReadyStatus;
+                    votingArea.classList.add("hidden"); readyArea.classList.remove("hidden"); readyBtn.classList.remove("hidden"); typingArea.classList.add("hidden"); timerContainer.classList.add("hidden"); c4Area.classList.add("hidden"); chessArea.classList.add("hidden");
+                    const myReadyStatus = data[`${playerRole}Ready`]; readyBtn.disabled = myReadyStatus;
                     statusMsg.innerText = myReadyStatus ? "Waiting for partner..." : `Ready up! Timer set to: ${activeDuration}s`;
-                   
-                    if (data.lastSyncResult) {
-                        resultAlert.innerHTML = data.lastSyncResult;
-                    } else {
-                        resultAlert.innerText = "⏳ Awaiting matching confirmations.";
-                    }
-                    if (data.p1Ready && data.p2Ready) {
-                        if (playerRole === "p1") {
-                            let duration = activeMode === "Lightning" ? 10 : activeDuration;
-                            runSyncTimer(duration);
-                        }
-                    }
+                    if (data.lastSyncResult) resultAlert.innerHTML = data.lastSyncResult; else resultAlert.innerText = "⏳ Awaiting matching confirmations.";
+                    if (data.p1Ready && data.p2Ready && playerRole === "p1") runSyncTimer(activeMode === "Lightning" ? 10 : activeDuration);
                 }
                 if (data.state === "typing") {
-                    votingArea.classList.add("hidden");
-                    readyArea.classList.add("hidden");
-                    typingArea.classList.remove("hidden");
-                    timerContainer.classList.remove("hidden");
-                    c4Area.classList.add("hidden");
-                    chessArea.classList.add("hidden");
-                    timerText.innerText = data.timer ?? activeDuration;
-                    resultAlert.innerText = "🧠 Enter your matching word now!";
-                    if (data.timer === 0 && !hasSubmitted) {
-                        evaluateRound();
-                    }
+                    votingArea.classList.add("hidden"); readyArea.classList.add("hidden"); typingArea.classList.remove("hidden"); timerContainer.classList.remove("hidden"); c4Area.classList.add("hidden"); chessArea.classList.add("hidden");
+                    timerText.innerText = data.timer ?? activeDuration; resultAlert.innerText = "🧠 Enter your matching word now!";
+                    if (data.timer === 0 && !hasSubmitted) evaluateRound();
                 }
+
+                // Connect 4 Views
                 if (data.state === "c4play") {
-                    votingArea.classList.add("hidden");
-                    readyArea.classList.add("hidden");
-                    typingArea.classList.add("hidden");
-                    timerContainer.classList.add("hidden");
-                    c4Area.classList.remove("hidden");
-                    chessArea.classList.add("hidden");
-                    const isMyTurn = data.c4Turn === playerRole;
-                    c4Status.innerText = isMyTurn ? "🟢 YOUR TURN! Tap a column to drop a piece." : "🔴 Opponent's turn to drop a piece...";
-                   
-                    if (activeMode === "Normal Connect 4") {
-                        resultAlert.innerText = "🎮 Mode: Normal Turn-Based Connect 4";
-                    } else if (data.lastSyncResult) {
-                        resultAlert.innerHTML = data.lastSyncResult;
-                    }
+                    votingArea.classList.add("hidden"); readyArea.classList.add("hidden"); typingArea.classList.add("hidden"); timerContainer.classList.add("hidden"); c4Area.classList.remove("hidden"); chessArea.classList.add("hidden");
+                    const isMyTurn = data.c4Turn === playerRole; c4Status.innerText = isMyTurn ? "🟢 YOUR TURN! Drop a piece." : "🔴 Opponent's turn to drop...";
+                    resultAlert.innerText = activeMode === "Normal Connect 4" ? "🎮 Mode: Normal Connect 4" : data.lastSyncResult;
                     renderC4Board(data.c4Board, isMyTurn);
                 }
-                if (data.state === "chessplay") {
-                    votingArea.classList.add("hidden");
-                    readyArea.classList.add("hidden");
-                    typingArea.classList.add("hidden");
-                    timerContainer.classList.add("hidden");
-                    c4Area.classList.add("hidden");
-                    chessArea.classList.remove("hidden");
-                    
-                    chessBoard = data.chessBoard || initChessBoard();
-                    chessTurn = data.chessTurn || "w";
-                    chessMovesMade = data.chessMovesThisSync || 0;
-                    const isMyTurn = (playerRole === "p1" && chessTurn === "w") || (playerRole === "p2" && chessTurn === "b");
-                    
-                    chessStatus.innerText = isMyTurn ? "🟢 YOUR TURN! (5 moves per sync)" : "🔴 Opponent's turn...";
-                    resultAlert.innerText = activeMode === "Normal Chess" ? "♟️ Normal Chess - Full Game" : `♟️ Chess - ${5 - chessMovesMade} moves left this sync`;
-                    
-                    renderChessBoard(chessBoard, isMyTurn && !chessGameOver);
-                    
-                    if (chessMovesMade >= 5 && activeMode === "Chess") {
-                        if (playerRole === "p1") {
-                            update(ref(db, `matches/${matchId}`), { state: "waiting", p1Ready: false, p2Ready: false, answers: null });
-                        }
-                    }
-                }
-                if (data.state === "chessvisualdelay") {
-                    votingArea.classList.add("hidden");
-                    readyArea.classList.add("hidden");
-                    typingArea.classList.add("hidden");
-                    timerContainer.classList.add("hidden");
-                    c4Area.classList.add("hidden");
-                    chessArea.classList.remove("hidden");
-                    
-                    chessBoard = data.chessBoard;
-                    renderChessBoard(chessBoard, false);
-                    
-                    if (playerRole === "p1") {
-                        setTimeout(() => {
-                            const winner = checkChessWin(chessBoard);
-                            if (winner) {
-                                update(ref(db, `matches/${matchId}`), {
-                                    state: "chesswin",
-                                    chessWinner: winner
-                                });
-                            } else if (data.currentMode === "Normal Chess") {
-                                update(ref(db, `matches/${matchId}`), { state: "chessplay" });
-                            } else {
-                                update(ref(db, `matches/${matchId}`), { state: "chessplay" });
-                            }
-                        }, 300);
-                    }
-                }
                 if (data.state === "c4visualdelay") {
-                    votingArea.classList.add("hidden");
-                    readyArea.classList.add("hidden");
-                    typingArea.classList.add("hidden");
-                    timerContainer.classList.add("hidden");
-                    c4Area.classList.remove("hidden");
-                    chessArea.classList.add("hidden");
+                    votingArea.classList.add("hidden"); readyArea.classList.add("hidden"); typingArea.classList.add("hidden"); timerContainer.classList.add("hidden"); c4Area.classList.remove("hidden"); chessArea.classList.add("hidden");
                     renderC4Board(data.c4Board, false);
                     if (!window.c4CountdownInterval) {
                         let localTimeLeft = 1.3;
-                        c4Status.innerText = `⏳ Piece placed! Syncing next moves... (1.3s)`;
-                       
                         window.c4CountdownInterval = setInterval(() => {
                             localTimeLeft -= 0.1;
-                            if (localTimeLeft <= 0) {
-                                clearInterval(window.c4CountdownInterval);
-                                window.c4CountdownInterval = null;
-                            } else {
-                                c4Status.innerText = `⏳ Piece placed! Syncing next moves... (${localTimeLeft.toFixed(1)}s)`;
-                            }
+                            if (localTimeLeft <= 0) { clearInterval(window.c4CountdownInterval); window.c4CountdownInterval = null; }
+                            else c4Status.innerText = `⏳ Syncing next moves... (${localTimeLeft.toFixed(1)}s)`;
                         }, 100);
                     }
-                    if (playerRole === "p1") {
-                        if (!window.c4DelayTimeout) {
-                            window.c4DelayTimeout = setTimeout(() => {
-                                if (activeMode === "Normal Connect 4") {
-                                    update(ref(db, `matches/${matchId}`), { state: "c4play" });
-                                } else {
-                                    const randomTheme = THEMES[Math.floor(Math.random() * THEMES.length)];
-                                    update(ref(db, `matches/${matchId}`), {
-                                        state: "waiting",
-                                        p1Ready: false,
-                                        p2Ready: false,
-                                        answers: null,
-                                        currentTheme: randomTheme
-                                    });
-                                }
-                                window.c4DelayTimeout = null;
-                            }, 1300);
-                        }
-                    }
-                } else {
-                    if (window.c4DelayTimeout && data.state !== "c4win") {
-                        clearTimeout(window.c4DelayTimeout);
-                        window.c4DelayTimeout = null;
-                    }
-                    if (window.c4CountdownInterval && data.state !== "c4win") {
-                        clearInterval(window.c4CountdownInterval);
-                        window.c4CountdownInterval = null;
+                    if (playerRole === "p1" && !window.c4DelayTimeout) {
+                        window.c4DelayTimeout = setTimeout(() => {
+                            if (activeMode === "Normal Connect 4") { update(ref(db, `matches/${matchId}`), { state: "c4play" }); }
+                            else { update(ref(db, `matches/${matchId}`), { state: "waiting", p1Ready: false, p2Ready: false, answers: null, currentTheme: THEMES[Math.floor(Math.random() * THEMES.length)] }); }
+                            window.c4DelayTimeout = null;
+                        }, 1300);
                     }
                 }
                 if (data.state === "c4win") {
-                    votingArea.classList.add("hidden");
-                    readyArea.classList.add("hidden");
-                    typingArea.classList.add("hidden");
-                    timerContainer.classList.add("hidden");
-                    c4Area.classList.remove("hidden");
-                    chessArea.classList.add("hidden");
-                   
+                    votingArea.classList.add("hidden"); readyArea.classList.add("hidden"); typingArea.classList.add("hidden"); timerContainer.classList.add("hidden"); c4Area.classList.remove("hidden"); chessArea.classList.add("hidden");
                     renderC4Board(data.c4Board, false, data.winningCells || []);
-                    let endText = data.c4Winner === playerRole ? "🎉 CONNECT 4 VICTORY! YOU WIN!" : "💀 MATCH OVER! OPPONENT WON!";
-                    resultAlert.innerText = endText;
+                    resultAlert.innerText = data.c4Winner === playerRole ? "🎉 CONNECT 4 VICTORY! YOU WIN!" : "💀 MATCH OVER! OPPONENT WON!";
                     if (!window.c4CountdownInterval) {
                         let winCountdownLeft = 5.0;
-                        c4Status.innerText = `Heading back to Vote setup lobby... (5.0s)`;
-                       
                         window.c4CountdownInterval = setInterval(() => {
                             winCountdownLeft -= 0.1;
-                            if (winCountdownLeft <= 0) {
-                                clearInterval(window.c4CountdownInterval);
-                                window.c4CountdownInterval = null;
-                            } else {
-                                c4Status.innerText = `Heading back to Vote setup lobby... (${Math.max(0, winCountdownLeft).toFixed(1)}s)`;
-                            }
+                            if (winCountdownLeft <= 0) { clearInterval(window.c4CountdownInterval); window.c4CountdownInterval = null; }
+                            else c4Status.innerText = `Lobby return in (${Math.max(0, winCountdownLeft).toFixed(1)}s)`;
                         }, 100);
                     }
-                    if (playerRole === "p1") {
-                        if (!window.c4DelayTimeout) {
-                            window.c4DelayTimeout = setTimeout(() => {
-                                update(ref(db, `matches/${matchId}`), {
-                                    state: "voting",
-                                    currentTheme: THEMES[Math.floor(Math.random() * THEMES.length)],
-                                    p1Ready: false, p2Ready: false,
-                                    answers: null, votes: null, modeVotes: null, timeVotes: null,
-                                    c4Board: Array(42).fill("empty"), c4Turn: "p1", streak: 0,
-                                    lastSyncResult: "", winningCells: null, c4Winner: null
-                                });
-                                window.c4DelayTimeout = null;
-                            }, 5000);
-                        }
+                    if (playerRole === "p1" && !window.c4DelayTimeout) {
+                        window.c4DelayTimeout = setTimeout(() => {
+                            update(ref(db, `matches/${matchId}`), { state: "voting", currentTheme: THEMES[Math.floor(Math.random() * THEMES.length)], p1Ready: false, p2Ready: false, answers: null, votes: null, modeVotes: null, timeVotes: null, c4Board: Array(42).fill("empty"), c4Turn: "p1", streak: 0, lastSyncResult: "", winningCells: null, c4Winner: null });
+                            window.c4DelayTimeout = null;
+                        }, 5000);
+                    }
+                }
+
+                // Chess Handling Views
+                if (data.state === "chessplay") {
+                    votingArea.classList.add("hidden"); readyArea.classList.add("hidden"); typingArea.classList.add("hidden"); timerContainer.classList.add("hidden"); c4Area.classList.add("hidden"); chessArea.classList.remove("hidden");
+                    
+                    const isMyTurn = data.chessTurn === playerRole;
+                    const movesLeft = data.chessMovesLeft || 0;
+                    
+                    if (activeMode === "Normal Chess") {
+                        chessStatus.innerText = isMyTurn ? "🟢 YOUR TURN! Make a chess move." : "🔴 Opponent's turn to move piece...";
+                        resultAlert.innerText = "🎮 Mode: Normal turn-based Chess";
+                    } else {
+                        chessStatus.innerText = isMyTurn ? `🟢 YOUR TURN! [${movesLeft} group match moves remaining]` : `🔴 Opponent's turn... [${movesLeft} group match moves remaining]`;
+                        resultAlert.innerText = data.lastSyncResult;
+                    }
+
+                    // Handle Undo visibility mechanics
+                    if (data.undoRequested && data.undoRequested !== playerRole) {
+                        chessGrantUndoBtn.classList.remove("hidden");
+                        chessUndoBtn.classList.add("hidden");
+                    } else {
+                        chessGrantUndoBtn.classList.add("hidden");
+                        chessUndoBtn.classList.remove("hidden");
+                        chessUndoBtn.disabled = (data.undoRequested === playerRole);
+                        chessUndoBtn.innerText = data.undoRequested === playerRole ? "Awaiting Choice..." : "Request Undo";
+                    }
+
+                    renderChessBoard(data.chessBoard, isMyTurn);
+                }
+                if (data.state === "chessvisualdelay") {
+                    votingArea.classList.add("hidden"); readyArea.classList.add("hidden"); typingArea.classList.add("hidden"); timerContainer.classList.add("hidden"); c4Area.classList.add("hidden"); chessArea.classList.remove("hidden");
+                    renderChessBoard(data.chessBoard, false);
+
+                    if (!window.chessCountdownInterval) {
+                        let localChessTime = 0.3;
+                        window.chessCountdownInterval = setInterval(() => {
+                            localChessTime -= 0.1;
+                            if (localChessTime <= 0) { clearInterval(window.chessCountdownInterval); window.chessCountdownInterval = null; }
+                            else chessStatus.innerText = `⏳ Recording piece movement... (${Math.max(0, localChessTime).toFixed(1)}s)`;
+                        }, 100);
+                    }
+
+                    if (playerRole === "p1" && !window.chessDelayTimeout) {
+                        window.chessDelayTimeout = setTimeout(() => {
+                            const nextMovesCount = (activeMode === "Normal Chess") ? 9999 : (data.chessMovesLeft - 1);
+                            if (nextMovesCount <= 0) {
+                                update(ref(db, `matches/${matchId}`), { state: "waiting", chessMovesLeft: 0, p1Ready: false, p2Ready: false, answers: null, currentTheme: THEMES[Math.floor(Math.random() * THEMES.length)] });
+                            } else {
+                                update(ref(db, `matches/${matchId}`), { state: "chessplay", chessMovesLeft: nextMovesCount });
+                            }
+                            window.chessDelayTimeout = null;
+                        }, 300);
                     }
                 }
                 if (data.state === "chesswin") {
-                    votingArea.classList.add("hidden");
-                    readyArea.classList.add("hidden");
-                    typingArea.classList.add("hidden");
-                    timerContainer.classList.add("hidden");
-                    c4Area.classList.add("hidden");
-                    chessArea.classList.remove("hidden");
+                    votingArea.classList.add("hidden"); readyArea.classList.add("hidden"); typingArea.classList.add("hidden"); timerContainer.classList.add("hidden"); c4Area.classList.add("hidden"); chessArea.classList.remove("hidden");
+                    renderChessBoard(data.chessBoard, false);
                     
-                    chessGameOver = true;
-                    renderChessBoard(data.chessBoard || chessBoard, false);
-                    const winnerColor = data.chessWinner;
-                    let endText = (winnerColor === "w" && playerRole === "p1") || (winnerColor === "b" && playerRole === "p2") ? "🎉 CHECKMATE! YOU WIN!" : "💀 CHECKMATE! OPPONENT WON!";
-                    resultAlert.innerText = endText;
-                    chessStatus.innerText = "Game Over";
-                    
-                    if (playerRole === "p1") {
-                        setTimeout(() => {
-                            update(ref(db, `matches/${matchId}`), {
-                                state: "voting",
-                                currentTheme: THEMES[Math.floor(Math.random() * THEMES.length)],
-                                p1Ready: false, p2Ready: false,
-                                answers: null, votes: null, modeVotes: null, timeVotes: null,
-                                chessBoard: null, chessTurn: "w", chessMovesThisSync: 0, chessWinner: null,
-                                streak: 0, lastSyncResult: ""
-                            });
-                            chessGameOver = false;
+                    resultAlert.innerText = data.chessWinner === playerRole ? "🎉 CHESS CHECKMATE VICTORY! YOU WIN!" : "💀 CHECKMATE! YOU LOSE!";
+                    if (!window.chessCountdownInterval) {
+                        let winChessTime = 5.0;
+                        window.chessCountdownInterval = setInterval(() => {
+                            winChessTime -= 0.1;
+                            if (winChessTime <= 0) { clearInterval(window.chessCountdownInterval); window.chessCountdownInterval = null; }
+                            else chessStatus.innerText = `Returning to setup lobby... (${Math.max(0, winChessTime).toFixed(1)}s)`;
+                        }, 100);
+                    }
+                    if (playerRole === "p1" && !window.chessDelayTimeout) {
+                        window.chessDelayTimeout = setTimeout(() => {
+                            update(ref(db, `matches/${matchId}`), { state: "voting", currentTheme: THEMES[Math.floor(Math.random() * THEMES.length)], p1Ready: false, p2Ready: false, answers: null, votes: null, modeVotes: null, timeVotes: null, c4Board: Array(42).fill("empty"), c4Turn: "p1", chessBoard: INITIAL_CHESS, chessTurn: "p1", chessMovesLeft: 0, undoRequested: "", streak: 0, lastSyncResult: "", chessWinner: null });
+                            window.chessDelayTimeout = null;
                         }, 5000);
                     }
                 }
             });
-            // Real-Time Chat tracking
+
+            // Chat engine
             onValue(ref(db, `matches/${matchId}/chat`), (snap) => {
-                chatBox.innerHTML = "";
-                const messages = snap.val();
+                chatBox.innerHTML = ""; const messages = snap.val();
                 if (messages) {
                     Object.values(messages).forEach(m => {
-                        const isEmote = m.msg.startsWith("[react]");
-                        const cleanMsg = isEmote ? m.msg.replace("[react]", "") : m.msg;
-                       
-                        let bubbleClass = m.sys ? "sys" : (m.uid === playerId ? "me" : "them");
-                        if(isEmote) bubbleClass += " react";
-                        const msgDiv = document.createElement("div");
-                        msgDiv.className = `bubble ${bubbleClass}`;
-                        msgDiv.innerText = cleanMsg;
-                        chatBox.appendChild(msgDiv);
+                        const isEmote = m.msg.startsWith("[react]"); const cleanMsg = isEmote ? m.msg.replace("[react]", "") : m.msg;
+                        let bubbleClass = m.sys ? "sys" : (m.uid === playerId ? "me" : "them"); if(isEmote) bubbleClass += " react";
+                        const msgDiv = document.createElement("div"); msgDiv.className = `bubble ${bubbleClass}`; msgDiv.innerText = cleanMsg; chatBox.appendChild(msgDiv);
                     });
                     chatBox.scrollTop = chatBox.scrollHeight;
                 }
             });
+        }
 
-            // Chess button handlers
-            chessUndoBtn.onclick = () => {
-                if (pendingUndoRequest) return;
-                pendingUndoRequest = true;
-                push(ref(db, `matches/${matchId}/chat`), { 
-                    uid: playerId, 
-                    msg: "🔄 Undo requested. Opponent, approve?", 
-                    sys: true 
-                });
-                // In full implementation, this would set a flag in DB and listen for approval
-                // For this version, simulate grant after delay (demo)
-                setTimeout(() => {
-                    opponentUndoGranted = true;
-                    pendingUndoRequest = false;
-                }, 1500);
-            };
-
-            chessResignBtn.onclick = () => {
-                if (confirm("Resign the game?")) {
-                    const winner = playerRole === "p1" ? "b" : "w";
+        // Action Handlers
+        chessUndoBtn.onclick = () => { update(ref(db, `matches/${matchId}`), { undoRequested: playerRole }); };
+        chessGrantUndoBtn.onclick = () => {
+            onValue(ref(db, `matches/${matchId}`), (snap) => {
+                const data = snap.val();
+                if (data && data.historyBoard) {
+                    let previousTurn = data.chessTurn === "p1" ? "p2" : "p1";
+                    let currentMovesCount = data.chessMovesLeft;
+                    let calculatedMoves = (data.currentMode === "Normal Chess") ? 9999 : (currentMovesCount + 1);
+                    
+                    off(ref(db, `matches/${matchId}/historyBoard`));
                     update(ref(db, `matches/${matchId}`), {
-                        state: "chesswin",
-                        chessWinner: winner
+                        chessBoard: data.historyBoard, chessTurn: previousTurn,
+                        chessMovesLeft: calculatedMoves, undoRequested: "", historyBoard: null,
+                        state: "chessplay"
                     });
                 }
-            };
-        }
-        readyBtn.onclick = () => {
-            const upd = {};
-            upd[`${playerRole}Ready`] = true;
-            upd["lastSyncResult"] = "";
-            update(ref(db, `matches/${matchId}`), upd);
+            }, { onlyOnce: true });
         };
+        chessResignBtn.onclick = () => {
+            let opponentRole = playerRole === "p1" ? "p2" : "p1";
+            update(ref(db, `matches/${matchId}`), { state: "chesswin", chessWinner: opponentRole });
+        };
+
+        readyBtn.onclick = () => { const upd = {}; upd[`${playerRole}Ready`] = true; upd["lastSyncResult"] = ""; update(ref(db, `matches/${matchId}`), upd); };
+
         function runSyncTimer(duration) {
-            let count = duration;
-            update(ref(db, `matches/${matchId}`), { state: "typing", timer: count });
-            timerInterval = setInterval(() => {
-                count--;
-                if (count >= 0) {
-                    update(ref(db, `matches/${matchId}`), { timer: count });
-                } else {
-                    clearInterval(timerInterval);
-                }
-            }, 1000);
+            let count = duration; update(ref(db, `matches/${matchId}`), { state: "typing", timer: count });
+            timerInterval = setInterval(() => { count--; if (count >= 0) { update(ref(db, `matches/${matchId}`), { timer: count }); } else { clearInterval(timerInterval); } }, 1000);
         }
+
         function evaluateRound() {
-            hasSubmitted = true;
-            const typedVal = wordInput.value.trim().toLowerCase() || "[nothing]";
-            wordInput.value = "";
-            wordInput.blur();
-            set(ref(db, `matches/${matchId}/answers/${playerRole}`), typedVal);
+            hasSubmitted = true; const typedVal = wordInput.value.trim().toLowerCase() || "[nothing]";
+            wordInput.value = ""; wordInput.blur(); set(ref(db, `matches/${matchId}/answers/${playerRole}`), typedVal);
         }
+
         function handleDisconnection() {
-            clearInterval(timerInterval);
-            if (currentMatchListener) off(ref(db, `matches/${matchId}`));
-            resultAlert.innerText = "⚠️ Connection lost or partner left! Reloading...";
-            setTimeout(() => location.reload(), 2000);
+            clearInterval(timerInterval); if (currentMatchListener) off(ref(db, `matches/${matchId}`));
+            resultAlert.innerText = "⚠️ Connection lost or partner left! Reloading..."; setTimeout(() => location.reload(), 2000);
         }
+
         document.querySelectorAll(".react-btn").forEach(btn => {
-            btn.onclick = () => {
-                const emo = btn.getAttribute("data-emoji");
-                push(ref(db, `matches/${matchId}/chat`), { uid: playerId, msg: `[react]${emo}`, sys: false });
-            };
+            btn.onclick = () => { const emo = btn.getAttribute("data-emoji"); push(ref(db, `matches/${matchId}/chat`), { uid: playerId, msg: `[react]${emo}`, sys: false }); };
         });
-        sendChatBtn.onclick = postChat;
-        chatInput.onkeypress = (e) => { if (e.key === "Enter") postChat(); };
-        function postChat() {
-            const m = chatInput.value.trim();
-            if(!m) return;
-            push(ref(db, `matches/${matchId}/chat`), { uid: playerId, msg: m, sys: false });
-            chatInput.value = "";
-        }
+        sendChatBtn.onclick = postChat; chatInput.onkeypress = (e) => { if (e.key === "Enter") postChat(); };
+        function postChat() { const m = chatInput.value.trim(); if(!m) return; push(ref(db, `matches/${matchId}/chat`), { uid: playerId, msg: m, sys: false }); chatInput.value = ""; }
     </script>
 </body>
 </html>
