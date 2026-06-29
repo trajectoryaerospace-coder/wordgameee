@@ -140,6 +140,36 @@
         }
         .input-style:focus { border-color: #ff8bb6; }
 
+        /* Connect 4 Matrix Board UI Layout */
+        #c4Area {
+            background: #1a1520;
+            padding: 10px;
+            border-radius: 12px;
+            border: 1px solid #42334a;
+        }
+        .c4-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            background: #241b2e;
+            padding: 8px;
+            border-radius: 10px;
+            max-width: 270px;
+            margin: 0 auto;
+        }
+        .c4-slot {
+            aspect-ratio: 1 / 1;
+            border-radius: 50%;
+            background: #131017;
+            border: 1px solid #3d2f44;
+            cursor: pointer;
+            transition: background 0.15s, transform 0.1s;
+        }
+        .c4-slot:active { transform: scale(0.9); }
+        .c4-slot.p1 { background: #ff8bb6; box-shadow: 0 0 8px #ff8bb6; }
+        .c4-slot.p2 { background: #00adb5; box-shadow: 0 0 8px #00adb5; }
+        .c4-slot.empty { cursor: pointer; }
+
         /* Reactions Deck */
         .reaction-deck {
             display: flex;
@@ -161,7 +191,7 @@
         .chat-box {
             background: #131017;
             flex-grow: 1;
-            height: 90px;
+            height: 80px;
             overflow-y: auto;
             border-radius: 10px;
             padding: 10px;
@@ -223,6 +253,11 @@
                 <div id="resultAlert">Waiting for connection...</div>
             </div>
 
+            <div id="c4Area" class="hidden">
+                <p id="c4Status" style="font-size: 13px; color: #ffca28; margin-bottom: 6px; font-weight: bold;"></p>
+                <div class="c4-grid" id="c4BoardDisplay"></div>
+            </div>
+
             <div id="votingArea" class="hidden">
                 <p class="section-title">1. Vote Modifiers:</p>
                 <div class="grid-box" id="modesGrid"></div>
@@ -274,7 +309,7 @@
         const db = getDatabase(app);
 
         const THEMES = ["Places", "Objects", "Animals", "Food", "Movies", "Superheroes", "Games", "Colors", "Jobs", "Brands"];
-        const MODES = ["Classic", "Lightning", "Mystery"];
+        const MODES = ["Classic", "Lightning", "Mystery", "Connect 4"];
         
         let playerId = localStorage.getItem("mm_pid") || "p_" + Math.random().toString(36).substr(2, 9);
         localStorage.setItem("mm_pid", playerId);
@@ -297,6 +332,9 @@
         const statusMsg = document.getElementById("statusMsg");
         const typingArea = document.getElementById("typingArea");
         const votingArea = document.getElementById("votingArea");
+        const c4Area = document.getElementById("c4Area");
+        const c4Status = document.getElementById("c4Status");
+        const c4BoardDisplay = document.getElementById("c4BoardDisplay");
         const wordInput = document.getElementById("wordInput");
         const chatBox = document.getElementById("chatBox");
         const chatInput = document.getElementById("chatInput");
@@ -334,7 +372,8 @@
                             p1: opponent, p2: playerId,
                             currentTheme: THEMES[Math.floor(Math.random() * THEMES.length)],
                             currentMode: "Classic",
-                            state: "voting", p1Ready: false, p2Ready: false, streak: 0
+                            state: "voting", p1Ready: false, p2Ready: false, streak: 0,
+                            c4Board: Array(42).fill("empty"), c4Turn: "p1"
                         }).then(() => initMatch());
                     }
                 } else {
@@ -397,6 +436,80 @@
             });
         }
 
+        function checkC4Win(board) {
+            // Horizontal line trace
+            for (let r = 0; r < 6; r++) {
+                for (let c = 0; c < 4; c++) {
+                    let i = r * 7 + c;
+                    if (board[i] && board[i] !== "empty" && board[i] === board[i+1] && board[i] === board[i+2] && board[i] === board[i+3]) return board[i];
+                }
+            }
+            // Vertical line trace
+            for (let r = 0; r < 3; r++) {
+                for (let c = 0; c < 7; c++) {
+                    let i = r * 7 + c;
+                    if (board[i] && board[i] !== "empty" && board[i] === board[i+7] && board[i] === board[i+14] && board[i] === board[i+21]) return board[i];
+                }
+            }
+            // Diagonal right-down trace
+            for (let r = 0; r < 3; r++) {
+                for (let c = 0; c < 4; c++) {
+                    let i = r * 7 + c;
+                    if (board[i] && board[i] !== "empty" && board[i] === board[i+8] && board[i] === board[i+16] && board[i] === board[i+24]) return board[i];
+                }
+            }
+            // Diagonal left-down trace
+            for (let r = 0; r < 3; r++) {
+                for (let c = 3; c < 7; c++) {
+                    let i = r * 7 + c;
+                    if (board[i] && board[i] !== "empty" && board[i] === board[i+6] && board[i] === board[i+12] && board[i] === board[i+18]) return board[i];
+                }
+            }
+            return null;
+        }
+
+        function renderC4Board(boardArray, interactive) {
+            c4BoardDisplay.innerHTML = "";
+            boardArray.forEach((cell, i) => {
+                const slot = document.createElement("div");
+                slot.className = "c4-slot " + cell;
+                
+                if (interactive && cell === "empty") {
+                    slot.onclick = () => {
+                        const col = i % 7;
+                        let targetIndex = -1;
+                        for (let row = 5; row >= 0; row--) {
+                            let idx = row * 7 + col;
+                            if (boardArray[idx] === "empty") {
+                                targetIndex = idx;
+                                break;
+                            }
+                        }
+                        if (targetIndex !== -1) {
+                            const updatedBoard = [...boardArray];
+                            updatedBoard[targetIndex] = playerRole;
+                            const winner = checkC4Win(updatedBoard);
+                            
+                            if (winner) {
+                                update(ref(db, `matches/${matchId}`), { c4Board: updatedBoard, state: "c4win", c4Winner: winner });
+                            } else {
+                                let nextTurn = (playerRole === "p1") ? "p2" : "p1";
+                                update(ref(db, `matches/${matchId}`), { 
+                                    c4Board: updatedBoard, 
+                                    c4Turn: nextTurn, 
+                                    state: "waiting", 
+                                    p1Ready: false, 
+                                    p2Ready: false, 
+                                    answers: null 
+                                });
+                            }
+                        }
+                    };
+                }
+                c4BoardDisplay.appendChild(slot);
+            });
+        }
+
         function initMatch() {
             off(ref(db, "matches"));
             onDisconnect(ref(db, `matches/${matchId}`)).remove();
@@ -412,7 +525,6 @@
                     return;
                 }
 
-                // Global Stats Display update
                 const currentStreak = data.streak || 0;
                 const activeMode = data.currentMode || "Classic";
                 streakBadge.innerText = `🔥 Streak: ${currentStreak}`;
@@ -426,24 +538,28 @@
 
                 renderVoteInterfaces(data.votes, data.modeVotes);
 
-                // Round processing
+                // Word Matching evaluations
                 if (data.answers?.p1 && data.answers?.p2) {
                     clearInterval(timerInterval);
                     if (data.answers.p1 === data.answers.p2 && data.answers.p1 !== "[nothing]") {
                         resultAlert.innerHTML = `🎉 MIND SYNCED! Both typed: <span style="color:#ff8bb6;">"${data.answers.p1.toUpperCase()}"</span>!`;
-                        if (playerRole === "p1" && data.state !== "resetting") {
-                            update(ref(db, `matches/${matchId}`), { state: "resetting", streak: currentStreak + 1 });
-                            setTimeout(() => {
-                                update(ref(db, `matches/${matchId}`), { 
-                                    state: "voting", 
-                                    currentTheme: THEMES[Math.floor(Math.random() * THEMES.length)], 
-                                    p1Ready: false, p2Ready: false, answers: null, votes: null, modeVotes: null
-                                });
-                            }, 4000);
+                        if (playerRole === "p1" && data.state !== "resetting" && data.state !== "c4play" && data.state !== "c4win") {
+                            if (activeMode === "Connect 4") {
+                                update(ref(db, `matches/${matchId}`), { state: "c4play", streak: currentStreak + 1 });
+                            } else {
+                                update(ref(db, `matches/${matchId}`), { state: "resetting", streak: currentStreak + 1 });
+                                setTimeout(() => {
+                                    update(ref(db, `matches/${matchId}`), { 
+                                        state: "voting", 
+                                        currentTheme: THEMES[Math.floor(Math.random() * THEMES.length)], 
+                                        p1Ready: false, p2Ready: false, answers: null, votes: null, modeVotes: null
+                                    });
+                                }, 4000);
+                            }
                         }
                     } else {
                         resultAlert.innerHTML = `❌ Miss! P1: "${data.answers.p1}" | P2: "${data.answers.p2}". Retrying...`;
-                        if (playerRole === "p1" && data.state !== "resetting") {
+                        if (playerRole === "p1" && data.state !== "resetting" && data.state !== "c4play" && data.state !== "c4win") {
                             update(ref(db, `matches/${matchId}`), { state: "resetting", streak: 0 });
                             setTimeout(() => {
                                 update(ref(db, `matches/${matchId}`), { 
@@ -460,7 +576,7 @@
                     hasSubmitted = false;
                 }
 
-                // Evaluate Votes Sync
+                // Configuration Sync Routing
                 if (data.votes?.p1 && data.votes?.p2 && data.modeVotes?.p1 && data.modeVotes?.p2 && data.state === "voting") {
                     if (playerRole === "p1") {
                         let chosenTheme = data.votes.p1 === data.votes.p2 ? data.votes.p1 : (Math.random() > 0.5 ? data.votes.p1 : data.votes.p2);
@@ -470,12 +586,14 @@
                     return;
                 }
 
+                // Global Workspace Structural Updates
                 if (data.state === "voting") {
                     resultAlert.innerText = "🗳️ Vote for configuration options!";
                     votingArea.classList.remove("hidden");
                     readyArea.classList.add("hidden");
                     typingArea.classList.add("hidden");
                     timerContainer.classList.add("hidden");
+                    c4Area.classList.add("hidden");
                 }
 
                 if (data.state === "waiting") {
@@ -484,6 +602,7 @@
                     readyBtn.classList.remove("hidden");
                     typingArea.classList.add("hidden");
                     timerContainer.classList.add("hidden");
+                    c4Area.classList.add("hidden");
 
                     const myReadyStatus = data[`${playerRole}Ready`];
                     readyBtn.disabled = myReadyStatus;
@@ -503,6 +622,7 @@
                     readyArea.classList.add("hidden");
                     typingArea.classList.remove("hidden");
                     timerContainer.classList.remove("hidden");
+                    c4Area.classList.add("hidden");
                     timerText.innerText = data.timer ?? 30;
                     resultAlert.innerText = "🧠 Enter your matching word now!";
 
@@ -510,9 +630,40 @@
                         evaluateRound();
                     }
                 }
+
+                // State Machine Connect 4 Interactions
+                if (data.state === "c4play") {
+                    votingArea.classList.add("hidden");
+                    readyArea.classList.add("hidden");
+                    typingArea.classList.add("hidden");
+                    timerContainer.classList.add("hidden");
+                    c4Area.classList.remove("hidden");
+
+                    const isMyTurn = data.c4Turn === playerRole;
+                    c4Status.innerText = isMyTurn ? "🟢 YOUR TURN! Tap a column to drop a piece." : "🔴 Opponent's turn to drop a piece...";
+                    renderC4Board(data.c4Board, isMyTurn);
+                }
+
+                if (data.state === "c4win") {
+                    votingArea.classList.add("hidden");
+                    readyArea.classList.add("hidden");
+                    typingArea.classList.add("hidden");
+                    timerContainer.classList.add("hidden");
+                    c4Area.classList.remove("hidden");
+                    
+                    renderC4Board(data.c4Board, false);
+                    let endText = data.c4Winner === playerRole ? "🎉 CONNECT 4 VICTORY! YOU WIN!" : "💀 MATCH OVER! OPPONENT WON!";
+                    resultAlert.innerText = endText;
+                    c4Status.innerText = "Returning to homepage...";
+
+                    setTimeout(() => {
+                        remove(ref(db, `matches/${matchId}`));
+                        location.reload();
+                    }, 4000);
+                }
             });
 
-            // Chat & Reactions Monitor
+            // Chat Monitoring
             onValue(ref(db, `matches/${matchId}/chat`), (snap) => {
                 chatBox.innerHTML = "";
                 const messages = snap.val();
@@ -568,7 +719,7 @@
             setTimeout(() => location.reload(), 2000);
         }
 
-        // Setup Reaction buttons
+        // Reaction Buttons Listeners
         document.querySelectorAll(".react-btn").forEach(btn => {
             btn.onclick = () => {
                 const emo = btn.getAttribute("data-emoji");
